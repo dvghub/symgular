@@ -1,0 +1,21 @@
+<nav class='navbar navbar-expand-md bg-dark navbar-dark p-0'>
+    <button type='button' class='navbar-toggler border-0' data-toggle='collapse' data-target='#collapsible' aria-controls='navbarNavAltMarkup' aria-expanded='false' aria-label='Toggle navigation'>
+        <span class='oi oi-menu border-0' aria-label='menu'></span>
+    </button>
+    <div id='collapsible' class='collapse navbar-collapse'>
+        <div class='navbar-nav mr-auto'>
+            <a class="{{itemClass}} text-white big" routerLink="">HOME</a>
+            <a *ngIf="user.firstName == ''" class="{{itemClass}} {{loginClass}}" routerLink="login">LOGIN</a>
+            <a *ngIf="user.admin == true || user.department == 'hr'" class="{{itemClass}} {{newClass}}" routerLink="new">NEW USER</a>
+            <a *ngIf="user.firstName != ''" class="{{itemClass}} {{leaveClass}}" routerLink="leave">LEAVE</a>
+        </div>
+        <div class="navbar-nav mr-md-2">
+            <a *ngIf="user.firstName != ''" class="{{itemClass}} {{logoutClass}}" routerLink="" (click)="logout()">LOG OUT</a>
+            <a *ngIf="user.firstName != ''" class="{{itemClass}} {{userClass}}" routerLink="user">
+                <span class="oi oi-person" aria-hidden="true"></span>
+                {{user.firstName.toUpperCase()}}
+            </a>
+        </div>
+    </div>
+</nav>
+<div class='col-12 bg-secondary px-0 height-5 mb-3'></div>

@@ -1,0 +1,10 @@
+<div class="col-12 col-md-8 col-lg-6">
+    <label for="email" class="col-6 float-left clear-left">Email: </label>
+    <input id="email" type="email" class="col-6 float-left" #email>
+    <span *ngIf="emailError != ''" class="text-warning float-right float-md-left clear-left clear-md-none px-md-1">{{emailError}}</span>
+
+    <label for="password" class="col-6 float-left clear-left">Password: </label>
+    <input id="password" type="password" class="col-6 float-left" #password>
+    <span *ngIf="passwordError != ''" class="text-warning float-right float-md-left clear-left clear-md-none px-md-1">{{passwordError}}</span>
+    <button class="col-6 float-right clear-right mt-2" (click)="login(email.value, password.value)">LOGIN</button>
+</div>

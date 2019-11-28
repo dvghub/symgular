@@ -1,0 +1,28 @@
+<div class="d-none d-md-block col-md-5 col-lg-3 float-left border-right px-0" *ngIf="user.admin == true">
+    <div *ngFor="let employee of employees">
+        <span [ngClass]="(selected == employee.email) ? 'email-list-item-active' : ''" class="d-block email-list-item px-3 rounded-left" (click)="load(employee.email)">{{employee.email}}</span>
+    </div>
+</div>
+
+<div class="col-12 col-md-7 col-lg-6 float-left">
+    <label *ngIf="user.admin != true" for="password_old" class="col-6 float-left clear-left">Old password: </label>
+    <input *ngIf="user.admin != true" type="password" id="password_old" class="col-6 float-right">
+    <span *ngIf="oldPasswordError != ''" class="col-6 float-right mb-2">{{oldPasswordError}}</span>
+    <label for="password" class="col-6 float-left clear-left">New password: </label>
+    <input type="password" id="password" class="col-6 float-right">
+    <label for="password_repeat" class="col-6 float-left clear-left">Repeat password: </label>
+    <input type="password" id="password_repeat" class="col-6 float-right">
+    <span *ngIf="passwordError != ''" class="col-6 float-right mb-2">{{passwordError}}</span>
+    <label *ngIf="user.admin == true" for="department" class="col-6 float-left clear-left">New department: </label>
+    <select *ngIf="user.admin == true" type="text" id="department" class="col-6 float-right" #department>
+        <option [selected]="current.department == 'it'" value="it">IT</option>
+        <option [selected]="current.department == 'hr'" value="hr">HR</option>
+        <option [selected]="current.department == 'rd'" value="rd">R&D</option>
+        <option [selected]="current.department == 'accounting'" value="accounting">Accounting</option>
+        <option [selected]="current.department == 'sales'" value="sales">Sales</option>
+    </select>
+    <label *ngIf="user.admin == true" for="admin" class="col-6 float-left clear-left">Admin status: </label>
+    <input *ngIf="user.admin == true" type="checkbox" id="admin" class="float-right" [checked]="current.admin">
+    <button class="col-6 float-right clear-right mt-2" (click)="update()">UPDATE</button>
+    <span *ngIf="uploadMessage != ''">{{uploadMessage}}</span>
+</div>
