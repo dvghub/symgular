@@ -1,0 +1,87 @@
+<?php
+
+namespace App\Controller;
+
+use App\CRUD;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class SessionManager extends AbstractController {
+    private $logger;
+
+    public function __construct(LoggerInterface $logger) {
+        $this->logger = $logger;
+    }
+
+    public function user() {
+        $response = array(
+            'email' => '',
+            'name' => '',
+            'department' => '',
+            'admin' => ''
+        );
+
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+        $session_id = $body['session_id'];
+        session_destroy();
+        session_id($session_id);
+        session_start();
+
+        if (isset($_SESSION['user'])) {
+            $user = $_SESSION['user'];
+            $response['email'] = $user->getEmail();
+            $response['name'] = $user->getFirstName();
+            $response['department'] = $user->getDepartment();
+            $response['admin'] = $user->getAdmin();
+        }
+
+        return new Response(
+            json_encode($response)
+        );
+    }
+
+    public function userByEmail() {
+        $response = array(
+            'email' => '',
+            'name' => '',
+            'department' => '',
+            'admin' => ''
+        );
+
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+        $email = $body['email'];
+
+        $crud = new CRUD();
+        $user = $crud->read($email);
+
+        $response['email'] = $user->getEmail();
+        $response['name'] = $user->getFirstName();
+        $response['department'] = $user->getDepartment();
+        $response['admin'] = $user->getAdmin();
+
+        return new Response(
+            json_encode($response)
+        );
+    }
+
+    public function users() {
+        $response = array(
+            'employees' => array()
+        );
+
+        $crud = new CRUD();
+        $response['employees'] = $crud->readAll();
+
+        return new Response(
+            json_encode($response)
+        );
+    }
+
+    public function logout() {
+        session_destroy();
+    }
+}

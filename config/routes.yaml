@@ -1,3 +1,31 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+index:
+  path: /
+  controller: App\Controller\IndexController::index
+
+login:
+  path: /login
+  controller: App\Controller\Validator::login
+
+user:
+  path: /user
+  controller: App\Controller\SessionManager::user
+
+userbyemail:
+  path: /email
+  controller: App\Controller\SessionManager::userByEmail
+
+users:
+  path: /users
+  controller: App\Controller\SessionManager::users
+
+logout:
+  path: /logout
+  controller: App\Controller\SessionManager::logout
+
+register:
+  path: /register
+  controller: App\Controller\Validator::register
+
+update:
+  path: /update
+  controller: App\Controller\Validator::update

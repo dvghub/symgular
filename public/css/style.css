@@ -1,0 +1,44 @@
+nav a:hover {
+    background-color: #424952;
+    color: white;
+}
+nav a.active {
+    background-color: #6c757d;
+    color: white;
+}
+article:hover {
+    border: 1px solid lightgrey;
+}
+footer {
+    font-size: 10px;
+    bottom: 0;
+}
+#footer-line {
+    bottom: 22px;
+}
+.clear-left {
+    clear: left;
+}
+@media (min-width: 768px) {
+    .clear-md-none {
+        clear: none;
+    }
+}
+.clear-right {
+    clear: right;
+}
+.clear-both {
+    clear: both;
+}
+.height-5 {
+    height: 5px;
+}
+.height-50 {
+    height: 50px;
+}
+.tile-order {
+    display: none;
+}
+.tile:hover .tile-order {
+    display: block;
+}
