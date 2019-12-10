@@ -4,28 +4,44 @@ index:
 
 login:
   path: /login
-  controller: App\Controller\Validator::login
+  controller: App\Controller\POSTS::login
 
 user:
   path: /user
-  controller: App\Controller\SessionManager::user
+  controller: App\Controller\GETS::user
 
 userbyemail:
   path: /email
-  controller: App\Controller\SessionManager::userByEmail
+  controller: App\Controller\GETS::userByEmail
 
 users:
   path: /users
-  controller: App\Controller\SessionManager::users
+  controller: App\Controller\GETS::users
 
 logout:
   path: /logout
-  controller: App\Controller\SessionManager::logout
+  controller: App\Controller\GETS::logout
 
 register:
   path: /register
-  controller: App\Controller\Validator::register
+  controller: App\Controller\POSTS::register
 
 update:
   path: /update
-  controller: App\Controller\Validator::update
+  controller: App\Controller\POSTS::update
+
+request:
+  path: /request
+  controller: App\Controller\POSTS::request
+
+hours:
+  path: /hours
+  controller: App\Controller\POSTS::hours
+
+requestsbymonth:
+  path: /requests
+  controller: App\Controller\POSTS::requestsByMonth
+
+birthdays:
+  path: /birthdays
+  controller: App\Controller\GETS::birthdaysByMonth

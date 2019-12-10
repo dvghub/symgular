@@ -9,7 +9,7 @@ class Employee {
     private $email;
     private $password;
     private $department;
-    private $birthday = 1000-01-01;
+    private $birthday;
     private $admin = false;
     private $hours;
 

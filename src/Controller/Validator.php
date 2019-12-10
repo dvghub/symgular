@@ -2,156 +2,413 @@
 
 namespace App\Controller;
 
-use App\CRUD;
+use App\EmployeeRequestCrud;
 use App\Entity\Employee;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Request;
+use App\RequestCrud;
+use App\UserCrud;
+use DateInterval;
+use DateTime;
+use function PHPSTORM_META\type;
 use Psr\Log\LoggerInterface;
 
-class Validator extends AbstractController {
+class Validator {
     private $logger;
 
     public function __construct(LoggerInterface $logger) {
         $this->logger = $logger;
     }
 
-    public function login() {
-        $crud = new CRUD();
+    public function validateLogin($body) {
+        $email = $this->testInput($body['email']);
+        $password = $this->testInput($body['password']);
+        $response['success'] = false;
 
-        $request = Request::createFromGlobals();
-        $body = json_decode($request->getContent(), true);
-
-        $email = $body['email'];
-        $password = $body['password'];
-
-        $employee = $crud->read($email);
-
-        $result = array(
-            'logged' => false,
-            'email_error' => '',
-            'password_error' => '',
-            'session_id' => ''
-        );
-
-        if ($employee == null) {
-            $result['email_error'] = 'Unknown email address.';
+        if (!$this->validateEmail($email)) {
+            $response['email_error'] = 'Unknown email address.';
         } else {
-            if (!password_verify($password, $employee->getPassword())) {
-                $result['password_error'] = 'Incorrect password';
+            $crud = new UserCrud();
+            $user = $crud->read($email);
+
+            if (!password_verify($password, $user->getPassword())) {
+                $response['password_error'] = 'Incorrect password.';
             } else {
-                $_SESSION['user'] = $employee;
-                $result['logged'] = true;
-                $result['first_name'] = $employee->getFirstName();
-                $result['last_name'] = $employee->getLastName();
-                $result['department'] = $employee->getDepartment();
-                $result['birthday'] = $employee->getBirthday();
-                $result['admin'] = $employee->getAdmin();
-                $result['session_id'] = session_id();
+                $_SESSION['user'] = $user;
+                $response['success'] = true;
+                $response['first_name'] = $user->getFirstName();
+                $response['last_name'] = $user->getLastName();
+                $response['department'] = $user->getDepartment();
+                $response['birthday'] = $user->getBirthday();
+                $response['admin'] = $user->getAdmin();
+                $response['session_id'] = session_id();
             }
         }
-
-        return new Response(
-            json_encode($result)
-        );
+        return $response;
     }
 
-    public function register() {
-        $crud = new CRUD();
+    public function validateRegister($body) {
+        $first_name = $this->testInput($body['first_name']);
+        $last_name = $this->testInput($body['last_name']);
+        $email = $this->testInput($body['email']);
+        $department = $this->testInput($body['department']);
+        $birthday = $this->testInput($body['birthday']);
+        $admin = $this->testInput($body['admin']);
+        $response['success'] = false;
 
-        $request = Request::createFromGlobals();
-        $body = json_decode($request->getContent(), true);
-
-        $employee = new Employee();
-
-        $employee->setFirstName($body['first_name']);
-        $employee->setLastName($body['last_name']);
-        $employee->setEmail($body['email']);
-        $employee->setPassword(password_hash('password', PASSWORD_BCRYPT, [10]));
-        $employee->setDepartment($body['department']);
-        $employee->setBirthday($body['birthday']);
-        $employee->setAdmin((int) $body['admin']);
-
-        $id = $crud->create($employee);
-
-        if ($id != 0) {
-            $result = array(
-                'registered' => true,
-                'registered_name' => $employee->getFirstName()
-            );
-        } else {
-            $result = array(
-                'registered' => false
-            );
+        if (empty($first_name)) {
+            $response['first_name_error'] = 'Please enter a first name.';
         }
+        if (empty($last_name)) {
+            $response['last_name_error'] = 'Please enter a last name.';
+        }
+        if (empty($email)) {
+            $response['email_error'] = 'Please enter an email address.';
+        } else {
+            if (!$this->validateEmail($email)) {
+                $response['email_error'] = 'Please enter a valid email address.';
+            } else {
+                $crud = new UserCrud();
+                $employee = new Employee();
+                $employee->setFirstName($first_name);
+                $employee->setLastName($last_name);
+                $employee->setEmail($email);
+                $employee->setPassword(password_hash('password', PASSWORD_BCRYPT, [10]));
+                $employee->setDepartment($department);
+                $employee->setBirthday($birthday);
+                $admin = $admin ? 1 : 0;
+                $employee->setAdmin($admin);
 
-        return new Response(
-            json_encode($result)
-        );
+                if ($crud->create($employee)) {
+                    $response['success'] = true;
+                    $response['first_name'] = $first_name;
+                } else {
+                    $response['first_name_error'] = 'Something went wrong. Please try again.';
+                }
+            }
+        }
+        return $response;
     }
 
-    public function update() {
-        $crud = new CRUD();
+    public function validateUpdate($body) {
+        $editor_admin = $this->testInput($body['editor_admin']);
+        $email = $this->testInput($body['email']);
+        $password_old = $this->testInput($body['password_old']);
+        $password = $this->testInput($body['password']);
+        $password_repeat = $this->testInput($body['password_repeat']);
+        $department = $this->testInput($body['department']);
+        $admin = $this->testInput($body['admin']);
 
-        $request = Request::createFromGlobals();
-        $body = json_decode($request->getContent(), true);
-
-        $employee = $crud->read($body['email']);
-
+        $response['success'] = false;
+        $crud = new UserCrud();
+        $user = $crud->read($email);
         $values = array();
-        $statement = 'UPDATE employees SET ';
 
-        $response = array();
 
-        $this->logger->info(json_encode($body));
-
-        if (!empty($body['password'])) {
-            if ($body['editor_admin']) {
-                if ($body['password'] == $body['password_repeat']) {
-                    $statement .= 'password = :password, ';
-                    $values['password'] = password_hash($body['password'], PASSWORD_BCRYPT, 10);
-                } else {
-                    $response['password_error'] = "Passwords don't match.";
-                    $response['response'] = false;
-                    return new Response(json_encode($response));
-                }
+        if (!$editor_admin) {
+            if (empty($password_old)) {
+                $response['old_password_error'] = 'Please enter your password.';
+            } elseif (!password_verify($password_old, $user->getPassword())) {
+                $response['old_password_error'] = 'Password incorrect.';
+            }
+            if (empty($password)) {
+                $response['password_error'] = 'Please enter a new password.';
             } else {
-                if (password_verify($body['password_old'], $employee->getPassword())) {
-                    if ($body['password'] == $body['password_repeat']) {
-                        $statement .= 'password = :password, ';
-                        $values['password'] = $body['password'];
+                if (empty($password_repeat)) {
+                    $response['repeat_password_error'] = 'Please repeat your new password.';
+                } else {
+                    if ($password != $password_repeat) {
+                        $response['repeat_password_error'] = 'Passwords don\'t match.';
                     } else {
-                        $response['password_error'] = "Passwords don't match.";
+                        $values['password'] = password_hash($password, PASSWORD_BCRYPT, [10]);
+
+                        if (!$crud->setup($values, $email)) {
+                            $response['password_error'] = 'Something went wrong. Please try again.';
+                        } else {
+                            $response['success'] = true;
+                        }
+                    }
+                }
+            }
+        } else {
+            if (!empty($password)) {
+                if (empty($password_repeat)) {
+                    $response['repeat_password_error'] = 'Please repeat the new password.';
+                } else {
+                    if ($password != $password_repeat) {
+                        $response['repeat_password_error'] = 'Passwords don\'t match.';
+                    } else {
+                        $values['password'] = password_hash($password, PASSWORD_BCRYPT, [10]);
+                    }
+                }
+            }
+            if ($department != $user->getDepartment()) $values['department'] = $department;
+            if ($admin != $user->getAdmin()) $values['admin'] = $admin ? 1 : 0;
+        }
+        if (empty($response['old_password_error']) && empty($response['password_error']) && empty($response['repeat_password_error'])) {
+            if (!$crud->setup($values, $email)) {
+                $response['password_error'] = 'Something went wrong. Please try again.';
+            } else {
+                $response['success'] = true;
+            }
+        }
+        return $response;
+    }
+
+    public function validateRequest($body) {
+        $start_date = $this->testInput($body['start_date']);
+        $start_time = $this->testInput($body['start_time']);
+        $end_date = $this->testInput($body['end_date']);
+        $end_time = $this->testInput($body['end_time']);
+        $type = $this->testInput($body['type']);
+        $description = $this->testInput($body['description']);
+        $email = $this->testInput($body['email']);
+
+        $response['success'] = false;
+        $crud = new UserCrud();
+        $user = $crud->read($email);
+        $hours = 0;
+
+        if(!$this->validateStartDate($start_date)) {
+            $response['start_time_error'] = 'Start date must be in the future.';
+        } elseif (!$this->validateEndDate($start_date, $end_date)) {
+            $response['end_time_error'] = 'End date must be the same or after start date.';
+        } else {
+            if (empty($description)) {
+                $response['description_error'] = 'Description is required.';
+            }
+            if (new DateTime($start_time) < new DateTime('08:00') || new DateTime($start_time) > new DateTime('17:00')) {
+                $response['start_time_error'] = 'Start time must be between 08:00 and 17:00.';
+            }
+            if (new DateTime($end_time) > new DateTime('18:00') || new DateTime($end_time) < new DateTime('09:00')) {
+                $response['end_time_error'] = 'End time must be between 09:00 and 18:00.';
+            }
+            if ($start_date == $end_date && new DateTime($start_time) > new DateTime($end_time)) {
+                $response['end_time_error'] = 'End time must be after start time.';
+            }
+            if (!key_exists('start_time_error', $response) &&
+                !key_exists('end_time_error', $response) &&
+                !key_exists('description_error', $response)) {
+
+                if (!$this->containsOverlap($start_date.' '.$start_time, $end_date.' '.$end_time, $user->getId()) || $type == 'standard') {
+                    switch ($type) {
+                        case 'pto':
+                        case 'special':
+                            if ($start_date == $end_date) {
+                                $result = $this->getDayHours($start_date, $start_time, $end_time, $user->getDepartment());
+                                if (!is_string($result)) {
+                                    $hours += $result;
+                                    $response = $this->enterRequest($start_date, $start_time, $end_date, $end_time, $type, $description, $user, $hours);
+                                } else {
+                                    $response['description_error'] = $result;
+                                }
+                            } elseif (new DateTime($end_date) == date_add(new DateTime($start_date), new DateInterval('P1D'))) {
+                                $result = $this->getDayHours($start_date, $start_time, '17:00', $user->getDepartment());
+                                if (!is_string($result)) {
+                                    $hours += $result;
+                                    $result = $this->getDayHours($end_date, '09:00', $end_time, $user->getDepartment());
+                                    if (!is_string($result)) {
+                                        $hours += $result;
+                                        $response = $this->enterRequest($start_date, $start_time, $end_date, $end_time, $type, $description, $user, $hours);
+                                    }
+                                } else {
+                                    $response['description_error'] = $result;
+                                }
+                            } else {
+                                $result = $this->getDayHours($start_date, $start_time, '17:00', $user->getDepartment());
+
+                                if (!is_string($result)) {
+                                    $hours += $result;
+
+                                    $start = new DateTime($start_date);
+                                    $end = new DateTime($end_date);
+                                    $date = $start->add(new DateInterval("P1D"));
+                                    $full_days = date_diff($start, $end)->format('%a');
+
+                                    for ($i = 0; $i < $full_days; $i ++) {
+                                        $date = $date->add(new DateInterval("P".$i."D"));
+                                        $result = $this->getDayHours($date, '09:00', '17:00', $user->getDepartment());
+
+                                        if (!is_string($result)) {
+                                            $hours += $result;
+                                        } else {
+                                            $response['description_error'] = $result;
+                                        }
+                                    }
+
+                                    if (!key_exists('description_error', $response)) {
+                                        $result = $this->getDayHours($end_date, '09:00', $end_time, $user->getDepartment());
+
+                                        if (!is_string($result)) {
+                                            $hours += $result;
+
+                                            $this->logger->info("End result: ".$hours);
+                                            $response = $this->enterRequest($start_date, $start_time, $end_date, $end_time, $type, $description, $user, $hours);
+                                        } else {
+                                            $response['description_error'] = $result;
+                                        }
+                                    }
+                                } else {
+                                    $response['description_error'] = $result;
+                                }
+                            }
+                            break;
+                        case 'appointment':
+                            if ($start_date != $end_date) {
+                                $response['end_time_error'] = 'This type of leave can not be longer than one day.';
+                            } else {
+                                $result = $this->getDayHours($start_date, $start_time, $end_time, $user->getDepartment());
+                                if (intval($result)) {
+                                    $hours += $result;
+                                    $response = $this->enterRequest($start_date, $start_time, $end_date, $end_time, $type, $description, $user, $hours);
+                                } else {
+                                    $response['description_error'] = $result;
+                                }
+                            }
+                            break;
+                        case 'standard':
+                            if ($start_date != $end_date) {
+                                $response['end_time_error'] = 'This type of leave can not be longer than one day.';
+                            } else {
+                                if ($this->isWeekendDay(new DateTime($start_date))) {
+                                    $result = 0;
+                                } else {
+                                    $result = round(abs(strtotime($start_time) - strtotime($end_time)) / 3600, 1);
+                                }
+                                if (intval($result)) {
+                                    $hours += $result;
+                                    $request = new Request();
+
+                                    $request->setStartDate($start_date.' '.$start_time.':00');
+                                    $request->setEndDate($end_date.' '.$end_time.':00');
+                                    $request->setType($type);
+                                    $request->setDescription($description);
+                                    $request->setApproved(1);
+                                    $request->setEditable(0);
+                                    $request->setStandard(1);
+
+                                    foreach ($crud->readAll() as $employee) {
+                                        $request->setEmployeeId($employee['id']);
+                                        $crud = new RequestCrud();
+
+                                        if ($crud->create($request)) {
+                                            $crud = new UserCrud();
+
+                                            $values = array('hours' => $hours * 10);
+
+                                            if ($crud->setup($values, $user->getEmail())) {
+                                                $response['success'] = true;
+                                                $response['hours'] = $hours;
+                                            } else {
+                                                $response['description_error'] = 'Something went wrong. Please try again.';
+                                            }
+                                        }
+                                    }
+
+                                } else {
+                                    $response['description_error'] = $result;
+                                }
+                            }
                     }
                 } else {
-                    $response['old_password_error'] = "Incorrect password.";
+                    $response['description_error'] = 'Request overlaps with existing request.';
                 }
             }
         }
+        return $response;
+    }
 
-        if (!empty($body['department'])) {
-            $this->logger->info('Adding department...');
-            $statement .= 'department = :department, ';
-            $values['department'] = $body['department'];
-        }
-
-        if (!empty($body['admin'])) {
-            $statement .= 'admin = :admin, ';
-            $values['admin'] = $body['admin'];
-        }
-
-        if (count($values) > 0) {
-            $statement = rtrim($statement, ", ");
-            $statement .= ' WHERE id = :id';
-            $values['id'] = $employee->getId();
-
-            return new Response(
-                json_encode($response['response'] = $crud->update($statement, $values))
-            );
+    private function getDayHours($date, $start, $end, $department) {
+        if (!$this->isFull($date, $department)) {
+            if ($this->isWeekendDay(new DateTime($date)) || $this->isStandardDay($date)) {
+                $diff = 0;
+            } else {
+                $diff = round(abs(strtotime($start) - strtotime($end)) / 3600, 1);
+            }
         } else {
-            return new Response(
-                json_encode($response['response'] = false)
-            );
+            $diff = 'Request overlaps with fully booked day.';
         }
+        return $diff;
+    }
+
+    private function isWeekendDay(DateTime $date) {
+        return $date->format('N') >= 6;
+    }
+
+    private function isStandardDay($date) {
+        $crud = new RequestCrud();
+        $result = $crud->readStandard($date);
+        return count($result) > 0;
+    }
+
+    private function isFull($date, $department) {
+        $crud = new RequestCrud();
+        return $crud->readFull($date, $department);
+    }
+
+    private function containsOverlap($start, $end, $id) {
+        $crud = new RequestCrud();
+        $result = $crud->readOverlap($start, $end, $id);
+        return count($result) > 0;
+    }
+
+    private function enterRequest($start_date, $start_time, $end_date, $end_time, $type, $description, Employee $user, $hours) {
+        $user_hours = $user->getHours() - $hours;
+        if ($user_hours < 0) {
+            $response['description_error'] = 'Not enough hours available.';
+        } else {
+            $request = new Request();
+
+            $request->setEmployeeId($user->getId());
+            $request->setStartDate($start_date.' '.$start_time.':00');
+            $request->setEndDate($end_date.' '.$end_time.':00');
+            $request->setType($type);
+            $request->setDescription($description);
+
+            $crud = new RequestCrud();
+
+            $request_id = $crud->create($request);
+
+            if ($request_id > 0) {
+                if ($type == 'pto') {
+                    $crud = new UserCrud();
+
+                    $this->logger->info("User hours after sub: ".$user_hours);
+
+                    $values = array('hours' => $user_hours * 10);
+
+                    if ($crud->setup($values, $user->getEmail())) {
+                        $response['success'] = true;
+                        $response['hours'] = $user_hours;
+                    } else {
+                        $response['description_error'] = 'Something went wrong. Please try again.';
+                    }
+                } else {
+                    $response['success'] = true;
+                    $response['hours'] = $user->getHours();
+                }
+            } else {
+                $response['description_error'] = 'Something went wrong. Please try again.';
+            }
+        }
+        return $response;
+    }
+
+    private function validateStartDate($date) {
+        return $date > date('Y-m-d');
+    }
+
+    private function validateEndDate($start_date, $end_date) {
+        return $end_date >= $start_date;
+    }
+
+    private function validateEmail($email) {
+        return preg_match('/^(?!(?:(?:\x22?\x5C[\x00-\x7E]\x22?)|(?:\x22?[^\x5C\x22]\x22?)){255,})(?!(?:(?:\x22?\x5C[\x00-\x7E]\x22?)|(?:\x22?[^\x5C\x22]\x22?)){65,}@)(?:(?:[\x21\x23-\x27\x2A\x2B\x2D\x2F-\x39\x3D\x3F\x5E-\x7E]+)|(?:\x22(?:[\x01-\x08\x0B\x0C\x0E-\x1F\x21\x23-\x5B\x5D-\x7F]|(?:\x5C[\x00-\x7F]))*\x22))(?:\.(?:(?:[\x21\x23-\x27\x2A\x2B\x2D\x2F-\x39\x3D\x3F\x5E-\x7E]+)|(?:\x22(?:[\x01-\x08\x0B\x0C\x0E-\x1F\x21\x23-\x5B\x5D-\x7F]|(?:\x5C[\x00-\x7F]))*\x22)))*@(?:(?:(?!.*[^.]{64,})(?:(?:(?:xn--)?[a-z0-9]+(?:-[a-z0-9]+)*\.){1,126}){1,}(?:(?:[a-z][a-z0-9]*)|(?:(?:xn--)[a-z0-9]+))(?:-[a-z0-9]+)*)|(?:\[(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9][:\]]){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?)))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))\]))$/iD', $email) == 1 ? true : false;
+    }
+
+    private function testInput($data) {
+        $data = trim($data);
+        $data = addslashes($data);
+        $data = htmlentities($data);
+        return $data;
     }
 }

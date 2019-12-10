@@ -1,10 +1,22 @@
 <div class="col-12 col-md-8 col-lg-6">
-    <label for="first_name" class="col-6 float-left clear-left">First name: </label>
-    <input id="first_name" type="text" class="col-6 float-left" #first_name>
-    <label for="last_name" class="col-6 float-left clear-left">Last name: </label>
-    <input id="last_name" type="text" class="col-6 float-left" #last_name>
-    <label for="email" class="col-6 float-left clear-left">Email: </label>
-    <input id="email" type="email" class="col-6 float-left" #email>
+    <span class="float-left clear-left col-12 p-0">
+        <label for="first_name" class="col-6 float-left clear-left">First name: </label>
+        <input id="first_name" type="text" class="col-6 float-left" #first_name>
+    </span>
+    <span *ngIf="firstNameError != ''" class="float-right clear-right text-danger">{{firstNameError}}</span>
+
+    <span class="float-left clear-left col-12 p-0">
+        <label for="last_name" class="col-6 float-left clear-left">Last name: </label>
+        <input id="last_name" type="text" class="col-6 float-left" #last_name>
+    </span>
+    <span *ngIf="lastNameError != ''" class="float-right clear-right text-danger">{{lastNameError}}</span>
+
+    <span class="float-left clear-left col-12 p-0">
+        <label for="email" class="col-6 float-left clear-left">Email: </label>
+        <input id="email" type="email" class="col-6 float-left" value="@symgular.com" #email>
+    </span>
+    <span *ngIf="emailError != ''" class="float-right clear-right text-danger">{{emailError}}</span>
+
     <label for="department" class="col-6 float-left clear-left">Department: </label>
     <select id="department" class="col-6 float-left" #department>
         <option value="it">IT</option>
@@ -17,6 +29,9 @@
     <input id="birthday" type="date" class="col-6 float-left" value="1000-01-01" #birthday>
     <label for="admin" class="col-6 float-left clear-left">Admin: </label>
     <input id="admin" type="checkbox" class="float-right" #admin>
-    <button class="col-6 float-right clear-right mt-2" (click)="register(first_name.value, last_name.value, email.value, department.selectedOptions, birthday.value, admin.checked)">REGISTER</button>
-    <span *ngIf="registered" class="col-12 float-right clear-right text-right px-0">{{first_name.value}} registered!</span>
+    <button class="col-6 float-right clear-right mt-2 bg-dark border border-secondary text-light"
+            (click)="register(first_name.value, last_name.value, email.value, department.selectedOptions[0].value, birthday.value, admin.checked)">
+        REGISTER
+    </button>
+    <span *ngIf="success" class="col-12 float-right clear-right text-right px-0 text-success">{{firstName}} registered!</span>
 </div>

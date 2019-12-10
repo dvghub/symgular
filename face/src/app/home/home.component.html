@@ -1,1 +1,13 @@
-<p> -- Home page here -- </p>
+<div class="col-12 col-md-8 float-left clear-left text-big" *ngIf="user">
+    <span *ngIf="today.getMonth() == birthdate.getMonth() && today.getDate() == birthdate.getDate(); else ngelse">Happy birthday, </span>
+    <ng-template #ngelse>Welcome, </ng-template>
+    {{user.firstName}}
+</div>
+
+<div class="col-12 col-md-3 col-md-2 float-right clear-right border-0 border-md-left mt-5 mt-md-0">
+    <span class="font-weight-bold float-left clear-left">Birthdays this month: </span>
+        <span *ngFor="let employee of employees">
+            <span class="float-left clear-left font-weight-light pr-2">{{employee.birthday}}.</span>
+            <span class="float-left">{{employee.first_name}} {{employee.last_name}}</span>
+    </span>
+</div>

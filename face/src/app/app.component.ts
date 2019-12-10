@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
     };
 
   constructor(private http: HttpClient, private cookieService: CookieService) {
-      if (this.cookieService.check('session')) {
+      if (this.cookieService.check('user')) {
           this.user = JSON.parse(cookieService.get('user'));
       }
   }

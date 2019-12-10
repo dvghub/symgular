@@ -6,7 +6,7 @@ use App\Entity\Employee;
 use PDO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class CRUD extends AbstractController {
+class UserCrud extends AbstractController {
     private $conn;
 
     public function __construct() {
@@ -57,6 +57,7 @@ class CRUD extends AbstractController {
             $employee->setDepartment($result['department']);
             $employee->setBirthday($result['birthday']);
             $employee->setAdmin($result['admin']);
+            $employee->setHours($result['hours']/10);
 
             return $employee;
         } else return null;
@@ -65,14 +66,31 @@ class CRUD extends AbstractController {
     public function readAll() {
         $emails = array();
 
-        $stmt = $this->conn->prepare("SELECT email FROM employees");
+        $stmt = $this->conn->prepare("SELECT * FROM employees");
         $stmt->execute();
         $results =  $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($results as $result) {
             array_push($emails, $result);
         }
+
         return $emails;
+    }
+
+    public function readBirthdaysByMonth($month) {
+        $employees = array();
+
+        $stmt = $this->conn->prepare("SELECT first_name, last_name, birthday FROM employees
+                                                       WHERE birthday REGEXP '[0-9]{4}-" . $month . "-[0-9]{2}'
+                                                       AND birthday NOT REGEXP '1000-01-01'");
+        $stmt->execute();
+        $results =  $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($results as $result) {
+            array_push($employees, $result);
+        }
+
+        return $employees;
     }
 
     public function update($statement, $values) {
@@ -83,6 +101,22 @@ class CRUD extends AbstractController {
         }
 
         return $stmt->execute();
+    }
+
+    public function setup($values, $email) {
+        $statement = 'UPDATE employees SET ';
+        $set = array();
+
+        foreach ($values as $key => $value) {
+            $statement .= $key.' = :'.$key.', ';
+            $set[':'.$key] = $value;
+        }
+
+        $statement = rtrim($statement, ', ');
+        $statement .= ' WHERE email = :email';
+        $set[':email'] = $email;
+
+        return $this->update($statement, $set);
     }
 
     public function delete($id) {

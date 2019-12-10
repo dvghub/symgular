@@ -1,36 +1,36 @@
 @import "bootstrap.css";
 @import "open-iconic-bootstrap.css";
 
+html {
+    margin-bottom: 5%;
+}
 nav a:hover {
-    color: white;
+    color: #78a782;
 }
 nav a.active {
-    background-color: #6c757d;
     color: white;
-}
-article:hover {
-    border: 1px solid lightgrey;
 }
 footer {
     font-size: 10px;
     bottom: 0;
 }
-#footer-line {
-    bottom: 22px;
-}
 .clear-left {
     clear: left;
-}
-@media (min-width: 768px) {
-    .clear-md-none {
-        clear: none;
-    }
 }
 .clear-right {
     clear: right;
 }
 .clear-both {
     clear: both;
+}
+.col-week {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    -ms-flex: 0 0 14.285714285714285714285714285714%;
+    flex: 0 0 14.285714285714285714285714285714%;
+    max-width: 14.285714285714285714285714285714%;
 }
 .height-5 {
     height: 5px;
@@ -44,8 +44,11 @@ footer {
 .tile:hover .tile-order {
     display: block;
 }
-.big {
+.text-big {
     font-size: 125%;
+}
+.bg-gray-light {
+    background-color: #ebebeb;
 }
 .email-list-item:hover {
     cursor: pointer;
@@ -54,4 +57,20 @@ footer {
 .email-list-item-active {
     background-color: #dddddd;
 }
-
+@media (min-width: 768px) {
+    .clear-md-none {
+        clear: none;
+    }
+    .border-md-left {
+        border-left: 1px solid #dee2e6 !important;
+    }
+}
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button,
+input::-webkit-clear-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+#footer-line {
+    bottom: 22px;
+}

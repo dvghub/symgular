@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
 
@@ -21,6 +21,7 @@ export class UserInfoComponent implements OnInit {
   uploadMessage = '';
   oldPasswordError = '';
   passwordError = '';
+  repeatPasswordError = '';
 
   constructor(private http: HttpClient, private cookieService: CookieService) {
     this.http.get('http://localhost:8000/users').subscribe( data => {
@@ -44,34 +45,31 @@ export class UserInfoComponent implements OnInit {
     });
   }
 
-  update() {
-    const passwordOld = document.getElementById('password_old') !== null ? document.getElementById('password_old').valueOf().value : '';
-    const password = document.getElementById('password') !== null ? document.getElementById('password').valueOf().value : '';
-    const passwordRepeat = document.getElementById('password_repeat') !== null ?
-            document.getElementById('password_repeat').valueOf().value : '';
-    const department = document.getElementById('department') !== null ?
-            document.getElementById('department').valueOf().selectedOptions[0].value : this.current.department;
-    const admin = document.getElementById('admin') !== null ? document.getElementById('admin').checked : false;
+  update(passwordOld, password, passwordRepeat, department, admin) {
+    const old = passwordOld === undefined ? '' : passwordOld.value;
+    const dprtmnt = department === undefined ? this.current.department : department.selectedOptions[0].value;
+    const admn = admin === undefined ? this.current.admin : admin.checked;
+    this.uploadMessage = '';
+    this.oldPasswordError = '';
+    this.passwordError = '';
+    this.repeatPasswordError = '';
 
     this.http.post('http://localhost:8000/update', {
       editor_admin: this.user.admin,
       email: this.current.email,
-      password_old: passwordOld,
+      password_old: old,
       password,
       password_repeat: passwordRepeat,
-      department,
-      admin
+      department: dprtmnt,
+      admin: admn
     }).pipe().subscribe( data => {
-      if ((data as any).response) {
-        this.uploadMessage = 'Update succeeded';
-        console.log('succeeded');
+      console.log(data);
+      if ((data as any).success) {
+        this.uploadMessage = 'Update succeeded!';
       } else {
-        if ((data as any).old_password_error) {
-          this.oldPasswordError = (data as any).old_password_error;
-        }
-        if ((data as any).password_error) {
-          this.passwordError = (data as any).password_error;
-        }
+        this.oldPasswordError = (data as any).old_password_error;
+        this.passwordError = (data as any).password_error;
+        this.repeatPasswordError = (data as any).repeat_password_error;
       }
     });
   }

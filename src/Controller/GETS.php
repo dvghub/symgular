@@ -2,18 +2,11 @@
 
 namespace App\Controller;
 
-use App\CRUD;
-use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\UserCrud;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class SessionManager extends AbstractController {
-    private $logger;
-
-    public function __construct(LoggerInterface $logger) {
-        $this->logger = $logger;
-    }
+class GETS {
 
     public function user() {
         $response = array(
@@ -55,7 +48,7 @@ class SessionManager extends AbstractController {
         $body = json_decode($request->getContent(), true);
         $email = $body['email'];
 
-        $crud = new CRUD();
+        $crud = new UserCrud();
         $user = $crud->read($email);
 
         $response['email'] = $user->getEmail();
@@ -69,11 +62,7 @@ class SessionManager extends AbstractController {
     }
 
     public function users() {
-        $response = array(
-            'employees' => array()
-        );
-
-        $crud = new CRUD();
+        $crud = new UserCrud();
         $response['employees'] = $crud->readAll();
 
         return new Response(
@@ -81,7 +70,18 @@ class SessionManager extends AbstractController {
         );
     }
 
+    public function birthdaysByMonth() {
+        $crud = new UserCrud();
+
+        return new Response(
+            json_encode(array(
+                'employees' => $crud->readBirthdaysByMonth(date('m'))
+            ))
+        );
+    }
+
     public function logout() {
         session_destroy();
     }
+
 }
