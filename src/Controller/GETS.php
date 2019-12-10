@@ -64,6 +64,7 @@ class GETS {
     public function users() {
         $crud = new UserCrud();
         $response['employees'] = $crud->readAll();
+        $response['employees']['hours'] = $response['employees']['hours']/10;
 
         return new Response(
             json_encode($response)

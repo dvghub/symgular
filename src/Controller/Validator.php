@@ -226,7 +226,7 @@ class Validator {
 
                                     for ($i = 0; $i < $full_days; $i ++) {
                                         $date = $date->add(new DateInterval("P".$i."D"));
-                                        $result = $this->getDayHours($date, '09:00', '17:00', $user->getDepartment());
+                                        $result = $this->getDayHours($date->format('Y-m-d'), '09:00', '17:00', $user->getDepartment());
 
                                         if (!is_string($result)) {
                                             $hours += $result;
@@ -291,13 +291,12 @@ class Validator {
                                         $crud = new RequestCrud();
 
                                         if ($crud->create($request)) {
+                                            $user_hours = ($employee['hours']/10) - $hours;
+                                            $values = array('hours' => $user_hours * 10);
                                             $crud = new UserCrud();
 
-                                            $values = array('hours' => $hours * 10);
-
-                                            if ($crud->setup($values, $user->getEmail())) {
+                                            if ($crud->setup($values, $employee['email'])) {
                                                 $response['success'] = true;
-                                                $response['hours'] = $hours;
                                             } else {
                                                 $response['description_error'] = 'Something went wrong. Please try again.';
                                             }

@@ -9,9 +9,9 @@ class Request {
     private $end_date;
     private $type;
     private $description;
-    private $approved = false;
-    private $editable = true;
-    private $standard = false;
+    private $approved = 0;
+    private $editable = 1;
+    private $standard = 0;
 
     public function getId() {
         return $this->id;

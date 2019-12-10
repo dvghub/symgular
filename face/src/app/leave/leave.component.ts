@@ -49,11 +49,11 @@ export class LeaveComponent implements OnInit {
     this.setMonth(this.month.number);
 
     if (this.cookieService.check('session')) {
-        this.user = JSON.parse(cookieService.get('user'));
+      this.user = JSON.parse(cookieService.get('user'));
     }
 
     http.post('http://localhost:8000/hours', {email: this.user.email}).pipe().subscribe(data => {
-        this.hours.left = (data as any).hours;
+      this.hours.left = (data as any).hours;
     });
   }
 
@@ -85,8 +85,10 @@ export class LeaveComponent implements OnInit {
         this.endTimeError = (data as any).end_time_error;
         this.descriptionError = (data as any).description_error;
       } else {
-          this.success = (data as any).success;
+        this.success = (data as any).success;
+        if (type !== 'standard') {
           this.hours.left = (data as any).hours;
+        }
       }
     });
   }
