@@ -64,17 +64,10 @@ class UserCrud extends AbstractController {
     }
 
     public function readAll() {
-        $emails = array();
-
         $stmt = $this->conn->prepare("SELECT * FROM employees");
         $stmt->execute();
-        $results =  $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        foreach ($results as $result) {
-            array_push($emails, $result);
-        }
-
-        return $emails;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function readBirthdaysByMonth($month) {

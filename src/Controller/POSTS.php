@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\RequestCrud;
 use App\UserCrud;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -58,6 +59,30 @@ class POSTS extends AbstractController {
     public function requestsByMonth() {
         return new Response(
             json_encode(array('response' => 'success'))
+        );
+    }
+
+
+    public function requestsByEmployee() {
+        $crud = new UserCrud();
+
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+
+        $email = $this->validator->testInput($body['email']);
+
+        $user = $crud->read($email);
+
+        if ($this->validator->validateEmail($email)) {
+            $crud = new RequestCrud();
+            $response['success'] = true;
+            $response['requests'] = $crud->readByEmployee($user->getId());
+        } else {
+            $response['success'] = false;
+        }
+
+        return new Response(
+            json_encode($response)
         );
     }
 

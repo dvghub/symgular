@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\RequestCrud;
 use App\UserCrud;
+use function Symfony\Component\Console\Tests\Command\createClosure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -64,7 +66,6 @@ class GETS {
     public function users() {
         $crud = new UserCrud();
         $response['employees'] = $crud->readAll();
-        $response['employees']['hours'] = $response['employees']['hours']/10;
 
         return new Response(
             json_encode($response)
@@ -77,6 +78,16 @@ class GETS {
         return new Response(
             json_encode(array(
                 'employees' => $crud->readBirthdaysByMonth(date('m'))
+            ))
+        );
+    }
+
+    public function requests() {
+        $crud = new RequestCrud();
+
+        return new Response(
+            json_encode(array(
+                'requests' => $crud->readAll()
             ))
         );
     }

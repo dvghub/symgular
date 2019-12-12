@@ -53,7 +53,7 @@ class RequestCrud {
     }
 
     public function readFull($date, $department) {
-        $stmt = $this->conn->prepare("SELECT id FROM requests
+        $stmt = $this->conn->prepare("SELECT COUNT(id) FROM requests
                                           WHERE employee_id IN (SELECT id FROM employees
                                           WHERE department = :department)
                                           AND (:date > start AND :date2 < end)");
@@ -61,13 +61,13 @@ class RequestCrud {
         $stmt->bindValue(':date2', $date);
         $stmt->bindValue(':department', $department);
         $stmt->execute();
-        $requests = count($stmt->fetchAll());
+        $requests = $stmt->fetch();
 
-        $stmt = $this->conn->prepare("SELECT id FROM employees
+        $stmt = $this->conn->prepare("SELECT COUNT(id) FROM employees
                                           WHERE department = :department");
         $stmt->bindValue(':department', $department);
         $stmt->execute();
-        $department_employees = count($stmt->fetchAll());
+        $department_employees = $stmt->fetch();
 
         return $requests >= $department_employees / 2;
     }
@@ -89,16 +89,36 @@ class RequestCrud {
     }
 
     public function readAll() {
-
+        $stmt = $this->conn->prepare("SELECT * FROM requests");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function readByMonth($month, $year, $department) {
         $stmt = $this->conn->prepare("SELECT * FROM requests
                                           WHERE employee_id IN (SELECT id FROM employees
                                                                 WHERE department = :department)
-                                          AND start REGEXP '".$year."-".$month."-[0-9]{2}'
-                                          OR end REGEXP '".$year."-".$month."-[0-9]{2}'");
+                                          AND (start REGEXP '".$year."-".$month."-[0-9]{2}'
+                                          OR end REGEXP '".$year."-".$month."-[0-9]{2}'
+                                          OR (start < :year + '-' + :month + '-' + '01'
+                                              AND end > :year2 + '-' + :month2 + '-' + '31'))");
         $stmt->bindValue(':department', $department);
+        $stmt->bindValue(':year', $year);
+        $stmt->bindValue(':year2', $year);
+        $stmt->bindValue(':month', $month);
+        $stmt->bindValue(':month2', $month);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function readByEmployee($id) {
+        $stmt = $this->conn->prepare("SELECT * FROM requests
+                                          WHERE employee_id = :id
+                                          AND type != 'standard'");
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function update() {

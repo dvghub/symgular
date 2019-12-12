@@ -38,9 +38,17 @@ hours:
   path: /hours
   controller: App\Controller\POSTS::hours
 
-requestsbymonth:
-  path: /requests
+monthrequests:
+  path: /monthrequests
   controller: App\Controller\POSTS::requestsByMonth
+
+requests:
+  path: /requests
+  controller: App\Controller\GETS::requests
+
+employeerequests:
+  path: /employeerequests
+  controller: App\Controller\POSTS::requestsByEmployee
 
 birthdays:
   path: /birthdays

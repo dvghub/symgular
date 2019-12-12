@@ -19,6 +19,8 @@ export class LeaveComponent implements OnInit {
   endTimeError = '';
   descriptionError = '';
 
+  requests;
+
   month = {
       number: 0,
       name: ''
@@ -54,6 +56,13 @@ export class LeaveComponent implements OnInit {
 
     http.post('http://localhost:8000/hours', {email: this.user.email}).pipe().subscribe(data => {
       this.hours.left = (data as any).hours;
+    });
+
+    http.post('http://localhost:8000/employeerequests', {email: this.user.email}).pipe().subscribe( data => {
+      console.log(data);
+      if ((data as any).success) {
+        this.requests = (data as any).requests;
+      }
     });
   }
 
@@ -146,7 +155,7 @@ export class LeaveComponent implements OnInit {
         break;
     }
 
-    this.http.post('http://localhost:8000/requests', {}).pipe().subscribe( data => {
+    this.http.post('http://localhost:8000/monthrequests', {}).pipe().subscribe( data => {
     });
 
     let i;
