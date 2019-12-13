@@ -8,6 +8,7 @@
         "ext-json": "*",
         "ext-mysqli": "*",
         "ext-pdo": "*",
+        "ext-calendar": "*",
         "nelmio/cors-bundle": "^2.0",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "4.3.*",

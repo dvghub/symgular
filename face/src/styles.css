@@ -50,6 +50,27 @@ footer {
 .bg-gray-light {
     background-color: #ebebeb;
 }
+.bg-full {
+    background-color: lightcoral;
+}
+.bg-near {
+    background-color: lightgoldenrodyellow;
+}
+.bg-approved {
+    background-color: lightgreen;
+}
+.bg-hold {
+    background-color: lightblue;
+}
+.bg-standard {
+    background-color: lightsteelblue;
+}
+.bg-past {
+    background-color: lightgrey;
+}
+.oi:hover {
+    cursor: pointer;
+}
 .email-list-item:hover {
     cursor: pointer;
     background-color: #eeeeee;

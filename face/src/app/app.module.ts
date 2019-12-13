@@ -12,6 +12,7 @@ import { NewUserComponent } from './new-user/new-user.component';
 import {CookieService} from 'ngx-cookie-service';
 import { UserInfoComponent } from './user-info/user-info.component';
 import { LeaveComponent } from './leave/leave.component';
+import { LeaveReviewComponent } from './leave-review/leave-review.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { LeaveComponent } from './leave/leave.component';
     HomeComponent,
     NewUserComponent,
     UserInfoComponent,
-    LeaveComponent
+    LeaveComponent,
+    LeaveReviewComponent
   ],
   imports: [
     BrowserModule,

@@ -2,15 +2,15 @@
     <span class="col-12 float-left clear-left text-right px-0">{{hours.left}} hours left of {{hours.total}}</span>
     <span class="float-left clear-left col-12 p-0">
         <label for="start_date" class="col-6 float-left clear-left">Start date: </label>
-        <input type="date" id="start_date" value="{{date}}" class="col-4 float-left" (change)="end_date.value = start_date.value" #start_date>
-        <input type="time" title="Start time" value="09:00" class="col-2 float-right" (change)="end_time.value = start_time.value" step="1800" min="08:00" max="18:00" #start_time>
+        <input type="date" id="start_date" value="{{date}}" class="col-4 float-left px-0 px-md-3" (change)="end_date.value = start_date.value" #start_date>
+        <input type="time" title="Start time" value="09:00" class="col-2 float-right px-0 px-md-3" (change)="end_time.value = start_time.value" step="1800" min="08:00" max="18:00" #start_time>
     </span>
     <span *ngIf="startTimeError != ''" class="col-6 text-danger float-right clear-right px-0 text-right">{{startTimeError}}</span>
 
     <span class="float-left clear-left col-12 p-0">
         <label for="end_date" class="col-6 float-left clear-left">End date: </label>
-        <input type="date" id="end_date" value="{{date}}" class="col-4 float-left" #end_date>
-        <input type="time" title="End time" value="17:00" class="col-2 float-right" step="1800" min="08:00" max="18:00" #end_time>
+        <input type="date" id="end_date" value="{{date}}" class="col-4 float-left px-0 px-md-3" #end_date>
+        <input type="time" title="End time" value="17:00" class="col-2 float-right px-0 px-md-3" step="1800" min="08:00" max="18:00" #end_time>
     </span>
     <span *ngIf="endTimeError != ''" class="col-6 text-danger float-right clear-right px-0 text-right">{{endTimeError}}</span>
 
@@ -31,7 +31,7 @@
     <span *ngIf="descriptionError != ''" class="col-6 text-danger float-right clear-right px-0 text-right">{{descriptionError}}</span>
 
     <button class="col-6 float-right clear-right mt-2 bg-dark border border-secondary text-light"
-            (click)="request(start_date.value, start_time.value, end_date.value, end_time.value, type.selectedOptions[0].value, descr.value)">SUBMIT</button>
+            (click)="sendRequest(start_date.value, start_time.value, end_date.value, end_time.value, type.selectedOptions[0].value, descr.value)">SUBMIT</button>
 
     <span *ngIf="success" class="col-6 float-right clear-right text-success text-right px-1">Leave requested!</span>
 
@@ -42,10 +42,17 @@
         <div class="col-12 float-left clear-left mt-2 border-top border-bottom border-secondary px-1">
             <div *ngFor="let day of days" class="col-week height-50 float-left p-1"
                  [ngClass]="{'border border-dark': today.getDate() === day.getDate() && (today.getMonth() + 1) == month.number && today.getFullYear() == year,
-                             'bg-light': day.getDay() == 0 || day.getDay() == 6}">
+                             'bg-light': day.getDay() == 0 || day.getDay() == 6,
+                             'bg-standard': stati[day.getDate()] == 'standard',
+                             'bg-approved': stati[day.getDate()] == 'approved',
+                             'bg-hold': stati[day.getDate()] == 'hold',
+                             'bg-past': stati[day.getDate()] == 'past',
+                             'bg-near': stati[day.getDate()] == 'near',
+                             'bg-full': stati[day.getDate()] == 'full'}">
                 {{day.getDate()}}
             </div>
         </div>
+
     </div>
 
     <div class="col-12 float-left clear-left mt-5 px-0">
@@ -56,7 +63,10 @@
         <span *ngFor="let request of requests" class="col-12 float-left clear-left px-0">
             <span class="col-3 px-0 float-left clear-left">{{request.start.split(" ")[0]}}</span>
             <span class="col-3 px-0 float-left">{{request.end.split(" ")[0]}}</span>
-            <span class="col-6 px-0 float-left">{{request.description.replace("\\", "")}}</span>
+            <span class="col-6 px-0 float-left">{{request.description.replace("\\", "")}}
+                <span (click)="editRequest(request.id)" [ngClass]="{'oi oi-x float-right p-1': request.end.split(' ')[0] >= today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate().length == 1 ? '0' + today.getDate() : today.getDate())}"></span>
+                <span (click)="deleteRequest(request.id)" [ngClass]="{'oi oi-pencil float-right p-1': request.end.split(' ')[0] >= today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate().length == 1 ? '0' + today.getDate() : today.getDate())}"></span>
+            </span>
         </span>
     </div>
 </div>

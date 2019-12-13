@@ -40,8 +40,6 @@ class POSTS extends AbstractController {
         $request = Request::createFromGlobals();
         $body = json_decode($request->getContent(), true);
 
-        $this->logger->info(json_encode($body));
-
         return new Response(
             json_encode($this->validator->validateUpdate($body))
         );
@@ -57,11 +55,28 @@ class POSTS extends AbstractController {
     }
 
     public function requestsByMonth() {
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+
+        if ($this->validator->validateEmail($body['email'])) {
+            $email = $body['email'];
+
+            $crud = new UserCrud();
+
+            $id = $crud->read($email)->getId();
+
+            $crud = new RequestCrud($this->logger);
+
+            $response['success'] = true;
+            $response['days'] = $crud->readByMonth($body['month'], $body['year'], $body['department'], $id);
+        } else {
+            $response['success'] = false;
+        }
+
         return new Response(
-            json_encode(array('response' => 'success'))
+            json_encode($response)
         );
     }
-
 
     public function requestsByEmployee() {
         $crud = new UserCrud();
@@ -74,7 +89,7 @@ class POSTS extends AbstractController {
         $user = $crud->read($email);
 
         if ($this->validator->validateEmail($email)) {
-            $crud = new RequestCrud();
+            $crud = new RequestCrud($this->logger);
             $response['success'] = true;
             $response['requests'] = $crud->readByEmployee($user->getId());
         } else {

@@ -12,6 +12,8 @@ export class LeaveComponent implements OnInit {
   today = new Date();
   date;
   days;
+  requests;
+  stati;
   year;
   success = false;
   description = '';
@@ -19,29 +21,33 @@ export class LeaveComponent implements OnInit {
   endTimeError = '';
   descriptionError = '';
 
-  requests;
-
   month = {
-      number: 0,
-      name: ''
+    number: 0,
+    name: ''
   };
   hours = {
-      total: 200,
-      left: 0
+    total: 200,
+    left: 0
+  };
+  day = {
+    date: new Date(),
+    status: ''
   };
 
   constructor(private cookieService: CookieService, private http: HttpClient) {
     if (!cookieService.check('session')) {
-        window.location.href = '/';
+      window.location.href = '/';
+    } else {
+      this.user = JSON.parse(cookieService.get('user'));
     }
 
     let m = (this.today.getMonth() + 1).toString();
     if (m.length < 2) {
-        m = '0' + m;
+      m = '0' + m;
     }
     let d = this.today.getDate().toString();
     if (d.length < 2) {
-        d = '0' + d;
+      d = '0' + d;
     }
     this.date = this.today.getFullYear() + '-' + m + '-' + (d);
 
@@ -49,10 +55,6 @@ export class LeaveComponent implements OnInit {
     this.year = this.today.getFullYear();
 
     this.setMonth(this.month.number);
-
-    if (this.cookieService.check('session')) {
-      this.user = JSON.parse(cookieService.get('user'));
-    }
 
     http.post('http://localhost:8000/hours', {email: this.user.email}).pipe().subscribe(data => {
       this.hours.left = (data as any).hours;
@@ -67,12 +69,12 @@ export class LeaveComponent implements OnInit {
   }
 
   static isLeapYear(year)  {
-      return ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0);
+    return ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0);
   }
 
   ngOnInit() {}
 
-  request(startDate, startTime, endDate, endTime, type, description) {
+  sendRequest(startDate, startTime, endDate, endTime, type, description) {
     this.success = false;
     this.startTimeError = '';
     this.endTimeError = '';
@@ -155,7 +157,11 @@ export class LeaveComponent implements OnInit {
         break;
     }
 
-    this.http.post('http://localhost:8000/monthrequests', {}).pipe().subscribe( data => {
+    this.http.post('http://localhost:8000/monthrequests',
+        {month: this.month.number, year: this.year, department: this.user.department, email: this.user.email}
+        ).pipe().subscribe( data => {
+      this.stati = (data as any).days;
+      console.log((data as any).days);
     });
 
     let i;
@@ -182,5 +188,13 @@ export class LeaveComponent implements OnInit {
       this.month.number += 1;
     }
     this.setMonth(this.month.number);
+  }
+
+  editRequest(id) {
+    console.log(id);
+  }
+
+  deleteRequest(id) {
+      console.log(id);
   }
 }

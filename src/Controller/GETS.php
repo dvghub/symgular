@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\RequestCrud;
 use App\UserCrud;
-use function Symfony\Component\Console\Tests\Command\createClosure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
