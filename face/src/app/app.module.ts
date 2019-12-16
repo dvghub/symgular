@@ -37,6 +37,7 @@ import { LeaveEditComponent } from './leave-edit/leave-edit.component';
         {path: 'new', component: NewUserComponent},
         {path: 'user', component: UserInfoComponent},
         {path: 'leave', component: LeaveComponent},
+        {path: 'edit', component: LeaveEditComponent},
         {path: 'review', component: LeaveReviewComponent}
     ]),
     HttpClientModule

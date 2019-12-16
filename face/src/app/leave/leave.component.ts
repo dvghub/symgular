@@ -11,6 +11,7 @@ export class LeaveComponent implements OnInit {
   user;
   today = new Date();
   date;
+  predays;
   days;
   requests;
   stati;
@@ -150,17 +151,18 @@ export class LeaveComponent implements OnInit {
         break;
     }
 
-    this.http.post('http://localhost:8000/monthrequests',
+    this.http.post(
+        'http://localhost:8000/monthrequests',
         {month: this.month.number, year: this.year, department: this.user.department, email: this.user.email}
         ).pipe().subscribe( data => {
       this.stati = (data as any).days;
-      console.log((data as any).days);
     });
 
-    let i;
-    for (i = 0; i < this.days.length; i ++) {
+    for (let i = 0; i < this.days.length; i ++) {
       this.days[i] = new Date(this.year, this.month.number - 1, i + 1);
     }
+
+    this.predays = this.days[0].getDay() === 0 ? new Array(6) : new Array(this.days[0].getDay() - 1);
   }
 
   previousMonth() {
