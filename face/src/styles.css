@@ -47,6 +47,9 @@ footer {
 .text-big {
     font-size: 125%;
 }
+.text-small {
+    font-size: 75%;
+}
 .bg-gray-light {
     background-color: #ebebeb;
 }
@@ -68,6 +71,9 @@ footer {
 .bg-past {
     background-color: lightgrey;
 }
+.empty-div:after {
+    content: '\200b';
+}
 .oi:hover {
     cursor: pointer;
 }
@@ -76,6 +82,13 @@ footer {
     background-color: #eeeeee;
 }
 .email-list-item-active {
+    background-color: #dddddd;
+}
+.request-list-item:hover {
+    cursor: pointer;
+    background-color: #eeeeee;
+}
+.request-list-item-active {
     background-color: #dddddd;
 }
 @media (min-width: 768px) {

@@ -5,15 +5,12 @@ namespace App;
 use App\Entity\Employee;
 use App\Entity\Request;
 use PDO;
-use Psr\Log\LoggerInterface;
 
 class RequestCrud {
     private $conn;
-    private $logger;
 
-    public function __construct(LoggerInterface $logger) {
+    public function __construct() {
         $this->conn = $this->connect();
-        $this->logger = $logger;
     }
 
     public function connect() {
@@ -91,6 +88,13 @@ class RequestCrud {
         return $stmt->fetchAll();
     }
 
+    public function readUnapproved() {
+        $stmt = $this->conn->prepare("SELECT * FROM requests
+                                          WHERE approved = 0");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function readAll() {
         $stmt = $this->conn->prepare("SELECT * FROM requests");
         $stmt->execute();
@@ -161,8 +165,6 @@ class RequestCrud {
                 }
             }
         }
-        $this->logger->info('Days: '.json_encode($days));
-
         return $days;
     }
 
@@ -175,11 +177,37 @@ class RequestCrud {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function update() {
+    public function update($statement, $values) {
+        $stmt = $this->conn->prepare($statement);
 
+        foreach ($values as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        return $stmt->execute();
     }
 
-    public function delete() {
+    public function setup($values, $id) {
+        $statement = 'UPDATE requests SET ';
+        $set = array();
 
+        foreach ($values as $key => $value) {
+            $statement .= $key.' = :'.$key.', ';
+            $set[':'.$key] = $value;
+        }
+
+        $statement = rtrim($statement, ', ');
+        $statement .= ' WHERE id = :id';
+        $set[':id'] = $id;
+
+        return $this->update($statement, $set);
+    }
+
+    public function delete($id) {
+        $stmt = $this->conn->prepare("DELETE FROM requests
+                                          WHERE id = :id");
+        $stmt->bindValue(':id', $id);
+
+        return $stmt->execute();
     }
 }

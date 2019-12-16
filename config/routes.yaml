@@ -53,3 +53,15 @@ employeerequests:
 birthdays:
   path: /birthdays
   controller: App\Controller\GETS::birthdaysByMonth
+
+unapproved:
+  path: /unapproved
+  controller: App\Controller\GETS::unapproved
+
+approve:
+  path: /approve
+  controller: App\Controller\POSTS::approve
+
+deny:
+  path: /deny
+  controller: App\Controller\POSTS::deny

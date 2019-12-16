@@ -91,6 +91,16 @@ class GETS {
         );
     }
 
+    public function unapproved() {
+        $crud = new RequestCrud();
+
+        return new Response(
+            json_encode(array(
+                'requests' => $crud->readUnapproved()
+            ))
+        );
+    }
+
     public function logout() {
         session_destroy();
     }

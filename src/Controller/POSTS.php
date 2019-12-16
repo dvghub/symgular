@@ -65,7 +65,7 @@ class POSTS extends AbstractController {
 
             $id = $crud->read($email)->getId();
 
-            $crud = new RequestCrud($this->logger);
+            $crud = new RequestCrud();
 
             $response['success'] = true;
             $response['days'] = $crud->readByMonth($body['month'], $body['year'], $body['department'], $id);
@@ -89,9 +89,10 @@ class POSTS extends AbstractController {
         $user = $crud->read($email);
 
         if ($this->validator->validateEmail($email)) {
-            $crud = new RequestCrud($this->logger);
+            $crud = new RequestCrud();
             $response['success'] = true;
             $response['requests'] = $crud->readByEmployee($user->getId());
+            $response['hours'] = $user->getHours();
         } else {
             $response['success'] = false;
         }
@@ -117,10 +118,28 @@ class POSTS extends AbstractController {
     }
 
     public function approve() {
+        $crud = new RequestCrud();
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+        $id = $this->validator->testInput($body['id']);
 
+        return new Response(
+            json_encode(array(
+                'response' => $crud->setup(array('approved' => 1), $id)
+            ))
+        );
     }
 
-    public function denied() {
+    public function deny() {
+        $crud = new RequestCrud();
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+        $id = $this->validator->testInput($body['id']);
 
+        return new Response(
+            json_encode(array(
+                'response' => $crud->delete($id)
+            ))
+        );
     }
 }

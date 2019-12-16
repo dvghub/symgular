@@ -8,9 +8,10 @@
             <a *ngIf="user.firstName == ''" class="{{itemClass}} {{loginClass}}" routerLink="login">LOGIN</a>
             <a *ngIf="user.admin == true || user.department == 'hr'" class="{{itemClass}} {{newClass}}" routerLink="new">NEW USER</a>
             <a *ngIf="user.firstName != ''" class="{{itemClass}} {{leaveClass}}" routerLink="leave">LEAVE</a>
+            <a *ngIf="user.admin == true || user.department == 'hr'" class="{{itemClass}} {{reviewClass}}" routerLink="review">REVIEW</a>
         </div>
         <div class="navbar-nav mr-md-2">
-            <a *ngIf="user.firstName != ''" class="{{itemClass}} {{logoutClass}}" routerLink="" (click)="logout()">LOG OUT</a>
+            <a *ngIf="user.firstName != ''" class="{{itemClass}}" (click)="logout()" routerLink="">LOG OUT</a>
             <a *ngIf="user.firstName != ''" class="{{itemClass}} {{userClass}}" routerLink="user">
                 <span class="oi oi-person" aria-hidden="true"></span>
                 {{user.firstName.toUpperCase()}}

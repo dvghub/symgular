@@ -1,4 +1,5 @@
 <div class="col-12 col-md-8 col-lg-6">
+    <!-- Request form -->
     <span class="col-12 float-left clear-left text-right px-0">{{hours.left}} hours left of {{hours.total}}</span>
     <span class="float-left clear-left col-12 p-0">
         <label for="start_date" class="col-6 float-left clear-left">Start date: </label>
@@ -35,6 +36,7 @@
 
     <span *ngIf="success" class="col-6 float-right clear-right text-success text-right px-1">Leave requested!</span>
 
+    <!-- Calendar -->
     <div class="col-12 float-left clear-left mt-5 flex-wrap p-0">
         <button class="col-2 oi oi-arrow-left float-left clear-left text-left border-0 bg-white" (click)="previousMonth()"></button>
         <span class="col-8 float-left text-center">{{month.name}}, {{year}}</span>
@@ -52,9 +54,17 @@
                 {{day.getDate()}}
             </div>
         </div>
-
+        <div>
+            <div class="col-1 px-0 text-small empty-div float-left clear-left bg-standard"></div><div class="col-3 px-1 float-left text-smaller text-small">Standard</div>
+            <div class="col-1 px-0 text-small empty-div float-left bg-past"></div><div class="col-3 px-1 float-left text-smaller text-small">Past</div>
+            <div class="col-1 px-0 text-small empty-div float-left clear-left bg-approved"></div><div class="col-3 px-1 float-left text-smaller text-small">Approved</div>
+            <div class="col-1 px-0 text-small empty-div float-left bg-near"></div><div class="col-3 px-1 float-left text-smaller text-small">Nearly full</div>
+            <div class="col-1 px-0 text-small empty-div float-left clear-left bg-hold"></div><div class="col-3 px-1 float-left text-smaller text-small">Hold</div>
+            <div class="col-1 px-0 text-small empty-div float-left bg-full"></div><div class="col-3 px-1 float-left text-smaller text-small">Full</div>
+        </div>
     </div>
 
+    <!-- Currents list -->
     <div class="col-12 float-left clear-left mt-5 px-0">
         <div class="px-0 float-left clear-left font-weight-bold">Current requests: </div>
         <div class="px-0 mb-1 border-bottom border-secondary col-3 float-left clear-left">Start</div>

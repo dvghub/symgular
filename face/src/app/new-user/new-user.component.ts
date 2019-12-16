@@ -19,6 +19,8 @@ export class NewUserComponent implements OnInit {
       if (!JSON.parse(this.cookieService.get('user')).admin) {
         window.location.href = '/';
       }
+    } else {
+      window.location.href = '/';
     }
   }
 

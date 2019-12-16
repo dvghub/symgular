@@ -29,10 +29,6 @@ export class LeaveComponent implements OnInit {
     total: 200,
     left: 0
   };
-  day = {
-    date: new Date(),
-    status: ''
-  };
 
   constructor(private cookieService: CookieService, private http: HttpClient) {
     if (!cookieService.check('session')) {
@@ -56,14 +52,11 @@ export class LeaveComponent implements OnInit {
 
     this.setMonth(this.month.number);
 
-    http.post('http://localhost:8000/hours', {email: this.user.email}).pipe().subscribe(data => {
-      this.hours.left = (data as any).hours;
-    });
-
     http.post('http://localhost:8000/employeerequests', {email: this.user.email}).pipe().subscribe( data => {
       console.log(data);
       if ((data as any).success) {
         this.requests = (data as any).requests;
+        this.hours.left = (data as any).hours;
       }
     });
   }
