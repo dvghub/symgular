@@ -41,7 +41,7 @@
         <button class="col-2 oi oi-arrow-left float-left clear-left text-left border-0 bg-white" (click)="previousMonth()"></button>
         <span class="col-8 float-left text-center">{{month.name}}, {{year}}</span>
         <button class="col-2 oi oi-arrow-right float-left text-right border-0 bg-white" (click)="nextMonth()"></button>
-        <div class="col-12 float-left clear-left mt-2 border-top border-bottom border-secondary px-1">
+        <div class="col-12 float-left clear-left mt-2 border-top border-bottom border-secondary px-0">
             <div *ngFor="let preday of predays" class="col-week height-50 float-left p-1 bg-light empty-div"></div>
             <div *ngFor="let day of days" class="col-week height-50 float-left p-1"
                  [ngClass]="{'border border-dark': today.getDate() === day.getDate() && (today.getMonth() + 1) == month.number && today.getFullYear() == year,
@@ -56,12 +56,12 @@
             </div>
         </div>
         <div>
-            <div class="col-1 px-0 text-small empty-div float-left clear-left bg-standard"></div><div class="col-3 px-1 float-left text-smaller text-small">Standard</div>
-            <div class="col-1 px-0 text-small empty-div float-left bg-past"></div><div class="col-3 px-1 float-left text-smaller text-small">Past</div>
-            <div class="col-1 px-0 text-small empty-div float-left clear-left bg-approved"></div><div class="col-3 px-1 float-left text-smaller text-small">Approved</div>
-            <div class="col-1 px-0 text-small empty-div float-left bg-near"></div><div class="col-3 px-1 float-left text-smaller text-small">Nearly full</div>
-            <div class="col-1 px-0 text-small empty-div float-left clear-left bg-hold"></div><div class="col-3 px-1 float-left text-smaller text-small">Hold</div>
-            <div class="col-1 px-0 text-small empty-div float-left bg-full"></div><div class="col-3 px-1 float-left text-smaller text-small">Full</div>
+            <div class="col-1 px-0 mt-1 text-small empty-div float-left clear-left bg-standard"></div><div class="col-3 px-1 mt-1 float-left text-smaller text-small">Standard</div>
+            <div class="col-1 px-0 mt-1 text-small empty-div float-left bg-past"></div><div class="col-3 px-1 mt-1 float-left text-smaller text-small">Past</div>
+            <div class="col-1 px-0 mt-1 text-small empty-div float-left clear-left bg-approved"></div><div class="col-3 px-1 mt-1 float-left text-smaller text-small">Approved</div>
+            <div class="col-1 px-0 mt-1 text-small empty-div float-left bg-near"></div><div class="col-3 px-1 mt-1 float-left text-smaller text-small">Nearly full</div>
+            <div class="col-1 px-0 mt-1 text-small empty-div float-left clear-left bg-hold"></div><div class="col-3 px-1 mt-1 float-left text-smaller text-small">Hold</div>
+            <div class="col-1 px-0 mt-1 text-small empty-div float-left bg-full"></div><div class="col-3 px-1 mt-1 float-left text-smaller text-small">Full</div>
         </div>
     </div>
 
@@ -75,8 +75,8 @@
             <span class="col-3 px-0 float-left clear-left">{{request.start.split(" ")[0]}}</span>
             <span class="col-3 px-0 float-left">{{request.end.split(" ")[0]}}</span>
             <span class="col-6 px-0 float-left">{{request.description.replace("\\", "")}}
-                <span (click)="editRequest(request.id)" [ngClass]="{'oi oi-x float-right p-1': request.end.split(' ')[0] >= today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate().length == 1 ? '0' + today.getDate() : today.getDate())}"></span>
-                <span (click)="deleteRequest(request.id)" [ngClass]="{'oi oi-pencil float-right p-1': request.end.split(' ')[0] >= today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate().length == 1 ? '0' + today.getDate() : today.getDate())}"></span>
+                <span (click)="deleteRequest(request.id)" [ngClass]="{'oi oi-x float-right p-1': request.end.split(' ')[0] >= today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate().length == 1 ? '0' + today.getDate() : today.getDate())}"></span>
+                <span (click)="editRequest(request.id)" [ngClass]="{'oi oi-pencil float-right p-1': request.end.split(' ')[0] >= today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate().length == 1 ? '0' + today.getDate() : today.getDate())}"></span>
             </span>
         </span>
     </div>

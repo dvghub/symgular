@@ -54,6 +54,24 @@ class POSTS extends AbstractController {
         );
     }
 
+    public function requestById() {
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+        $crud = new RequestCrud();
+        $request = $crud->read($body['id']);
+
+        $splits = explode(' ', $request['start']);
+        $request['start_date'] = $splits[0];
+        $request['start_time'] = substr($splits[1], 0, 5);
+        $splits = explode(' ', $request['end']);
+        $request['end_date'] = $splits[0];
+        $request['end_time'] = substr($splits[1], 0, 5);
+
+        return new Response(
+            json_encode($request)
+        );
+    }
+
     public function requestsByMonth() {
         $request = Request::createFromGlobals();
         $body = json_decode($request->getContent(), true);
@@ -139,6 +157,30 @@ class POSTS extends AbstractController {
         return new Response(
             json_encode(array(
                 'response' => $crud->delete($id)
+            ))
+        );
+    }
+
+    public function deleteRequest() {
+        $crud = new RequestCrud();
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+        $id = $this->validator->testInput($body['id']);
+
+        return new Response(
+            json_encode(array(
+                'response' => $crud->delete($id)
+            ))
+        );
+    }
+
+    public function editRequest() {
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+
+        return new Response(
+            json_encode(array(
+                $this->validator->validateEdit($body)
             ))
         );
     }

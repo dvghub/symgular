@@ -2,14 +2,13 @@
 
 namespace App\Controller;
 
-use App\EmployeeRequestCrud;
 use App\Entity\Employee;
 use App\Entity\Request;
 use App\RequestCrud;
 use App\UserCrud;
 use DateInterval;
 use DateTime;
-use function PHPSTORM_META\type;
+use http\Env\Response;
 use Psr\Log\LoggerInterface;
 
 class Validator {
@@ -302,7 +301,6 @@ class Validator {
                                             }
                                         }
                                     }
-
                                 } else {
                                     $response['description_error'] = $result;
                                 }
@@ -316,15 +314,90 @@ class Validator {
         return $response;
     }
 
+    public function validateEdit($body) {
+        $start_date = $this->testInput($body['start_date']);
+        $start_time = $this->testInput($body['start_time']);
+        $end_date = $this->testInput($body['end_date']);
+        $end_time = $this->testInput($body['end_time']);
+        $description = $this->testInput($body['description']);
+        $email = $this->testInput($body['email']);
+        $id = $this->testInput($body['id']);
+
+        $response['success'] = false;
+        $crud = new UserCrud();
+        $user = $crud->read($email);
+
+        if(!$this->validateStartDate($start_date)) {
+            $response['start_time_error'] = 'Start date must be in the future.';
+        } elseif (!$this->validateEndDate($start_date, $end_date)) {
+            $response['end_time_error'] = 'End date must be the same or after start date.';
+        } else {
+            if (empty($description)) {
+                $response['description_error'] = 'Description is required.';
+            }
+            if (new DateTime($start_time) < new DateTime('08:00') || new DateTime($start_time) > new DateTime('17:00')) {
+                $response['start_time_error'] = 'Start time must be between 08:00 and 17:00.';
+            }
+            if (new DateTime($end_time) > new DateTime('18:00') || new DateTime($end_time) < new DateTime('09:00')) {
+                $response['end_time_error'] = 'End time must be between 09:00 and 18:00.';
+            }
+            if ($start_date == $end_date && new DateTime($start_time) > new DateTime($end_time)) {
+                $response['end_time_error'] = 'End time must be after start time.';
+            }
+            if (!key_exists('start_time_error', $response) &&
+                !key_exists('end_time_error', $response) &&
+                !key_exists('description_error', $response)) {
+
+                if (!$this->containsOverlap($start_date.' '.$start_time, $end_date.' '.$end_time, $user->getId(), $id)) {
+                    $start = new DateTime($start_date);
+                    $end = new DateTime($end_date);
+                    $date = $start->add(new DateInterval("P1D"));
+                    $full_days = date_diff($start, $end)->format('%a');
+
+                    for ($i = 0; $i < $full_days; $i ++) {
+                        $date = $date->add(new DateInterval("P".$i."D"));
+                        $result = $this->getDayHours($date->format('Y-m-d'), '09:00', '17:00', $user->getDepartment());
+
+                        if (is_string($result)) {
+                            $response['description_error'] = $result;
+                        }
+                    }
+                    if (!key_exists('description_error', $response)) {
+                        $result = $this->getDayHours($end_date, '09:00', $end_time, $user->getDepartment());
+
+                        if (!is_string($result)) {
+                            $values['start'] = $start_date.' '.$start_time.':00';
+                            $values['end'] = $end_date.' '.$end_time.':00';
+                            $values['description'] = $description;
+
+                            $crud = new RequestCrud();
+                            $response['success'] = $crud->setup($values, $id);
+                        } else {
+                            $response['description_error'] = $result;
+                        }
+                    }
+                } else {
+                    $response['description_error'] = 'Request overlaps with existing request.';
+                }
+            }
+        }
+        return $response;
+    }
+
     private function getDayHours($date, $start, $end, $department) {
-        if (!$this->isFull($date, $department)) {
-            if ($this->isWeekendDay(new DateTime($date)) || $this->isStandardDay($date)) {
-                $diff = 0;
+        $full = $this->isFull($date, $department);
+        if (!is_string($full)) {
+            if (!$full) {
+                if ($this->isWeekendDay(new DateTime($date)) || $this->isStandardDay($date)) {
+                    $diff = 0;
+                } else {
+                    $diff = round(abs(strtotime($start) - strtotime($end)) / 3600, 1);
+                }
             } else {
-                $diff = round(abs(strtotime($start) - strtotime($end)) / 3600, 1);
+                $diff = 'Request overlaps with fully booked day.';
             }
         } else {
-            $diff = 'Request overlaps with fully booked day.';
+            $diff = 'Something went wrong, please try again.';
         }
         return $diff;
     }
@@ -344,9 +417,9 @@ class Validator {
         return $crud->readFull($date, $department);
     }
 
-    private function containsOverlap($start, $end, $id) {
+    private function containsOverlap($start, $end, $id, $request_id = null) {
         $crud = new RequestCrud();
-        $result = $crud->readOverlap($start, $end, $id);
+        $result = $crud->readOverlap($start, $end, $id, $request_id);
         return count($result) > 0;
     }
 

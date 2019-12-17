@@ -89,6 +89,7 @@ export class LeaveComponent implements OnInit {
         this.startTimeError = (data as any).start_time_error;
         this.endTimeError = (data as any).end_time_error;
         this.descriptionError = (data as any).description_error;
+        this.setMonth(this.month.number);
       } else {
         this.success = (data as any).success;
         if (type !== 'standard') {
@@ -187,9 +188,19 @@ export class LeaveComponent implements OnInit {
 
   editRequest(id) {
     console.log(id);
+    this.cookieService.set('id', id);
+    window.location.href = 'edit';
   }
 
   deleteRequest(id) {
-      console.log(id);
+    this.http.post('http://localhost:8000/deleterequest', {id}).pipe().subscribe( data => {
+      if ((data as any).success) {
+        this.requests.forEach( (item, index) => {
+          if (this.requests[index].id === id) {
+            this.requests.splice(index, 1);
+          }
+        });
+      }
+    });
   }
 }

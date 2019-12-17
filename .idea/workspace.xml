@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5d1ea8bc-eabc-4b94-9b8c-6b5dfc1302a6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/face/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/face/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/routes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/leave-review/leave-review.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/face/src/app/leave-review/leave-review.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/face/src/app/leave/leave.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/face/src/app/leave/leave.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/face/src/app/leave/leave.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/face/src/app/leave/leave.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/face/src/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/POSTS.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/POSTS.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Validator.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Validator.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RequestCrud.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/RequestCrud.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -90,10 +95,10 @@
           <entry key="html" value="18" />
           <entry key="js" value="10" />
           <entry key="json" value="97" />
-          <entry key="php" value="27166" />
+          <entry key="php" value="28525" />
           <entry key="twig" value="614" />
           <entry key="txt" value="51" />
-          <entry key="yaml" value="1794" />
+          <entry key="yaml" value="2048" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
@@ -102,11 +107,11 @@
           <entry key="HTML" value="18" />
           <entry key="JSON" value="97" />
           <entry key="JavaScript" value="10" />
-          <entry key="PHP" value="26725" />
+          <entry key="PHP" value="28057" />
           <entry key="PLAIN_TEXT" value="115" />
-          <entry key="SQL" value="441" />
+          <entry key="SQL" value="468" />
           <entry key="Twig" value="614" />
-          <entry key="YAML" value="1794" />
+          <entry key="YAML" value="2048" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.js.language.service.starts">
@@ -121,8 +126,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/routes.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="636">
-              <caret line="59" selection-start-line="59" selection-end-line="59" />
+            <state relative-caret-position="789">
+              <caret line="78" column="47" selection-start-line="78" selection-start-column="47" selection-end-line="78" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -139,11 +144,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Controller/POSTS.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="109">
-              <caret line="98" selection-start-line="98" selection-end-line="98" />
+            <state relative-caret-position="619">
+              <caret line="178" column="44" selection-start-line="178" selection-start-column="44" selection-end-line="178" selection-end-column="44" />
               <folding>
                 <element signature="e#34#54#0#PHP" expanded="true" />
               </folding>
@@ -151,13 +156,14 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Controller/Validator.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3407">
-              <caret line="406" column="11" selection-start-line="406" selection-start-column="11" selection-end-line="406" selection-end-column="11" />
+            <state relative-caret-position="962">
+              <caret line="372" column="54" selection-start-line="372" selection-start-column="54" selection-end-line="372" selection-end-column="54" />
               <folding>
-                <element signature="e#34#62#0#PHP" expanded="true" />
+                <element signature="e#34#58#0#PHP" expanded="true" />
+                <element signature="e#8062#15747#0#PHP" />
               </folding>
             </state>
           </provider>
@@ -178,8 +184,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/RequestCrud.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1928">
-              <caret line="207" column="59" selection-start-line="207" selection-start-column="59" selection-end-line="207" selection-end-column="59" />
+            <state relative-caret-position="-520">
+              <caret line="93" column="51" selection-start-line="93" selection-start-column="51" selection-end-line="93" selection-end-column="51" />
               <folding>
                 <element signature="e#23#47#0#PHP" expanded="true" />
               </folding>
@@ -236,12 +242,12 @@
         <option value="$PROJECT_DIR$/src/Entity/Employee.php" />
         <option value="$PROJECT_DIR$/src/EmployeeRequestCrud.php" />
         <option value="$PROJECT_DIR$/src/Entity/Request.php" />
-        <option value="$PROJECT_DIR$/src/Controller/Validator.php" />
         <option value="$PROJECT_DIR$/src/UserCrud.php" />
         <option value="$PROJECT_DIR$/composer.json" />
         <option value="$PROJECT_DIR$/src/Controller/GETS.php" />
         <option value="$PROJECT_DIR$/config/routes.yaml" />
         <option value="$PROJECT_DIR$/src/RequestCrud.php" />
+        <option value="$PROJECT_DIR$/src/Controller/Validator.php" />
         <option value="$PROJECT_DIR$/src/Controller/POSTS.php" />
       </list>
     </option>
@@ -469,7 +475,7 @@
       <workItem from="1574774439741" duration="482000" />
       <workItem from="1574851211955" duration="41108000" />
       <workItem from="1575371306223" duration="47577000" />
-      <workItem from="1575879198130" duration="64334000" />
+      <workItem from="1575879198130" duration="77325000" />
     </task>
     <task id="LOCAL-00001" summary="Leave request functionality added.">
       <created>1575991002882</created>
@@ -496,13 +502,13 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="213692000" />
+    <option name="totallyTimeSpent" value="226683000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14765458" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14765458" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="TypeScript" order="0" />
@@ -517,7 +523,7 @@
       <window_info anchor="bottom" id="Docker" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="10" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.329718" />
-      <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" weight="0.329718" />
       <window_info anchor="bottom" id="Database Changes" order="13" weight="0.329718" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -660,23 +666,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/UserCrud.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="99" column="30" selection-start-line="99" selection-start-column="30" selection-end-line="99" selection-end-column="30" />
-          <folding>
-            <element signature="e#23#47#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/routes.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="636">
-          <caret line="59" selection-start-line="59" selection-end-line="59" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Controller/GETS.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1537">
@@ -687,20 +676,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Controller/Validator.php">
+    <entry file="file://$PROJECT_DIR$/config/routes.yaml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3407">
-          <caret line="406" column="11" selection-start-line="406" selection-start-column="11" selection-end-line="406" selection-end-column="11" />
+        <state relative-caret-position="789">
+          <caret line="78" column="47" selection-start-line="78" selection-start-column="47" selection-end-line="78" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UserCrud.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="99" column="30" selection-start-line="99" selection-start-column="30" selection-end-line="99" selection-end-column="30" />
           <folding>
-            <element signature="e#34#62#0#PHP" expanded="true" />
+            <element signature="e#23#47#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/RequestCrud.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1928">
-          <caret line="207" column="59" selection-start-line="207" selection-start-column="59" selection-end-line="207" selection-end-column="59" />
+        <state relative-caret-position="-520">
+          <caret line="93" column="51" selection-start-line="93" selection-start-column="51" selection-end-line="93" selection-end-column="51" />
           <folding>
             <element signature="e#23#47#0#PHP" expanded="true" />
           </folding>
@@ -709,10 +705,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Controller/POSTS.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="109">
-          <caret line="98" selection-start-line="98" selection-end-line="98" />
+        <state relative-caret-position="619">
+          <caret line="178" column="44" selection-start-line="178" selection-start-column="44" selection-end-line="178" selection-end-column="44" />
           <folding>
             <element signature="e#34#54#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Controller/Validator.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="962">
+          <caret line="372" column="54" selection-start-line="372" selection-start-column="54" selection-end-line="372" selection-end-column="54" />
+          <folding>
+            <element signature="e#34#58#0#PHP" expanded="true" />
+            <element signature="e#8062#15747#0#PHP" />
           </folding>
         </state>
       </provider>

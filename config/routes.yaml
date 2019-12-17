@@ -46,6 +46,10 @@ requests:
   path: /requests
   controller: App\Controller\GETS::requests
 
+idrequest:
+  path: /idrequest
+  controller: App\Controller\POSTS::requestById
+
 employeerequests:
   path: /employeerequests
   controller: App\Controller\POSTS::requestsByEmployee
@@ -65,3 +69,11 @@ approve:
 deny:
   path: /deny
   controller: App\Controller\POSTS::deny
+
+deleterequest:
+  path: /deleterequest
+  controller: App\Controller\POSTS::deleteRequest
+
+editrequest:
+  path: /editrequest
+  controller: App\Controller\POSTS::editRequest

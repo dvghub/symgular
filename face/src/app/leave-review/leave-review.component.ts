@@ -53,7 +53,7 @@ export class LeaveReviewComponent implements OnInit {
             this.requests.splice(index, 1);
           }
         });
-        window.location.reload();
+        this.ngOnInit();
       }
     });
   }
@@ -68,7 +68,7 @@ export class LeaveReviewComponent implements OnInit {
             this.requests.splice(index, 1);
           }
         });
-        window.location.reload();
+        this.ngOnInit();
       }
     });
   }

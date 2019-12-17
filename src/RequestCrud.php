@@ -40,7 +40,14 @@ class RequestCrud {
         return $this->conn->lastInsertId();
     }
 
-    public function read(Employee $employee) {}
+    public function read($id) {
+        $stmt = $this->conn->prepare("SELECT * FROM requests
+                                          WHERE id = :id");
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+    }
 
     public function readStandard($date) {
         $stmt = $this->conn->prepare("SELECT id FROM requests
@@ -61,29 +68,40 @@ class RequestCrud {
         $stmt->bindValue(':date2', $date);
         $stmt->bindValue(':department', $department);
         $stmt->execute();
-        $requests = $stmt->fetch();
+        $requests = $stmt->fetchColumn();
 
         $stmt = $this->conn->prepare("SELECT COUNT(id) FROM employees
                                           WHERE department = :department");
         $stmt->bindValue(':department', $department);
         $stmt->execute();
-        $department_employees = $stmt->fetch();
+        $department_employees = $stmt->fetchColumn();
 
-        return $requests >= $department_employees / 2;
+        if (!is_int($requests) || !is_int($department_employees)) {
+            return 'error';
+        } else {
+            return $requests >= $department_employees / 2;
+        }
     }
 
-    public function readOverlap($start, $end, $id) {
-        $stmt = $this->conn->prepare("SELECT id FROM requests
-                                          WHERE type != 'standard' 
-                                          AND (:start BETWEEN start AND end
-                                          OR :end BETWEEN start AND end
-                                          OR (:start2 < start AND :end2 > end))
-                                          AND employee_id = :id");
+    public function readOverlap($start, $end, $id, $request_id) {
+        $sql = "SELECT id FROM requests
+                    WHERE type != 'standard' 
+                    AND (:start BETWEEN start AND end
+                    OR :end BETWEEN start AND end
+                    OR (:start2 < start AND :end2 > end))
+                    AND employee_id = :id";
+
+        if ($request_id != null) $sql .= " AND id != :request_id";
+
+        $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':start', $start);
         $stmt->bindValue(':end', $end);
         $stmt->bindValue(':start2', $start);
         $stmt->bindValue(':end2', $end);
         $stmt->bindValue('id', $id);
+
+        if ($request_id != null) $stmt->bindValue(':request_id', $request_id);
+
         $stmt->execute();
         return $stmt->fetchAll();
     }
@@ -107,7 +125,7 @@ class RequestCrud {
         $stmt->bindValue(':department', $department);
         $stmt->execute();
 
-        $department_size = $stmt->fetch()[0];
+        $department_size = $stmt->fetchColumn();
 
         $days = array();
 
@@ -155,12 +173,14 @@ class RequestCrud {
                         $days[$i] = 'past';
                     }
                 } else {
-                    if (count($result) >= $department_size / 2) {
+                    if (count($result) >= floor($department_size / 2)) {
                         $days[$i] = 'full';
-                    } elseif (count($result) >= ($department_size / 2) - 1) {
-                        $days[$i] = 'near';
                     } else {
-                        $days[$i] = 'empty';
+                        if ($department_size > 2 && count($result) >= ($department_size / 2) - 1) {
+                            $days[$i] = 'near';
+                        } else {
+                            $days[$i] = 'empty';
+                        }
                     }
                 }
             }
