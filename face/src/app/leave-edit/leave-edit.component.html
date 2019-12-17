@@ -1,0 +1,26 @@
+<div class="col-12 col-md-8 col-lg-6">
+    <span class="float-left clear-left col-12 p-0">
+        <label for="start_date" class="col-6 float-left clear-left">Start date: </label>
+        <input type="date" id="start_date" value="{{request.start_date}}" class="col-4 float-left px-0 px-md-3" #start_date>
+        <input type="time" title="Start time" value="{{request.start_time}}" class="col-2 float-right px-0 px-md-3" step="1800" min="08:00" max="18:00" #start_time>
+    </span>
+    <span *ngIf="startTimeError != ''" class="col-6 text-danger float-right clear-right px-0 text-right">{{startTimeError}}</span>
+
+    <span class="float-left clear-left col-12 p-0">
+        <label for="end_date" class="col-6 float-left clear-left">End date: </label>
+        <input type="date" id="end_date" value="{{request.end_date}}" class="col-4 float-left px-0 px-md-3" #end_date>
+        <input type="time" title="End time" value="{{request.end_time}}" class="col-2 float-right px-0 px-md-3" step="1800" min="08:00" max="18:00" #end_time>
+    </span>
+    <span *ngIf="endTimeError != ''" class="col-6 text-danger float-right clear-right px-0 text-right">{{endTimeError}}</span>
+
+    <span class="float-left clear-left col-12 p-0">
+        <label for="description" class="col-6 float-left clear-left">Description: </label>
+        <textarea id="description" class="col-6 float-right" rows="1" #descr>{{request.description}}</textarea>
+    </span>
+    <span *ngIf="descriptionError != ''" class="col-6 text-danger float-right clear-right px-0 text-right">{{descriptionError}}</span>
+
+    <button class="col-6 float-right clear-right mt-2 bg-dark border border-secondary text-light"
+            (click)="sendRequest(start_date.value, start_time.value, end_date.value, end_time.value, descr.value)">SUBMIT</button>
+
+    <span *ngIf="success" class="col-6 float-right clear-right text-success text-right px-1">Leave edited!</span>
+</div>
