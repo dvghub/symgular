@@ -1,0 +1,12 @@
+<div class="col-12 col-md-8 col-lg-6">
+    <span class="float-left clear-left col-12 p-0">
+        <label for="title" class="col-6 float-left clear-left">Title: </label>
+        <input id="title" type="text" class="col-6 float-left" #title>
+    </span>
+    <span class="float-left clear-left col-12 p-0">
+        <label for="message" class="col-6 float-left clear-left">Message: </label>
+        <textarea id="message" class="col-6 float-left" rows="5" #message></textarea>
+    </span>
+    <button class="col-6 float-right clear-right mt-2 bg-dark border border-secondary text-light" (click)="post(title.value, message.value)">POST</button>
+    <span *ngIf="success" class="col-12 float-right clear-right text-right px-0 text-success">Message successfully posted!</span>
+</div>
