@@ -38,6 +38,9 @@ footer {
 .height-50 {
     height: 50px;
 }
+.height-view {
+    height: 100vh;
+}
 .tile-order {
     display: none;
 }

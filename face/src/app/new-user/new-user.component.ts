@@ -16,7 +16,8 @@ export class NewUserComponent implements OnInit {
 
   constructor(private http: HttpClient, private cookieService: CookieService) {
     if (cookieService.check('user')) {
-      if (!JSON.parse(this.cookieService.get('user')).admin) {
+      console.log(JSON.parse(this.cookieService.get('user')).department);
+      if (!JSON.parse(this.cookieService.get('user')).admin && JSON.parse(this.cookieService.get('user')).department !== 'hr') {
         window.location.href = '/';
       }
     } else {

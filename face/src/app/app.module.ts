@@ -14,6 +14,7 @@ import { UserInfoComponent } from './user-info/user-info.component';
 import { LeaveComponent } from './leave/leave.component';
 import { LeaveReviewComponent } from './leave-review/leave-review.component';
 import { LeaveEditComponent } from './leave-edit/leave-edit.component';
+import { NoticeComponent } from './notice/notice.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { LeaveEditComponent } from './leave-edit/leave-edit.component';
     UserInfoComponent,
     LeaveComponent,
     LeaveReviewComponent,
-    LeaveEditComponent
+    LeaveEditComponent,
+    NoticeComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +40,8 @@ import { LeaveEditComponent } from './leave-edit/leave-edit.component';
         {path: 'user', component: UserInfoComponent},
         {path: 'leave', component: LeaveComponent},
         {path: 'edit', component: LeaveEditComponent},
-        {path: 'review', component: LeaveReviewComponent}
+        {path: 'review', component: LeaveReviewComponent},
+        {path: 'notice', component: NoticeComponent}
     ]),
     HttpClientModule
   ],

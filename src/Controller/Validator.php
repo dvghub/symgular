@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Employee;
+use App\Entity\Notice;
 use App\Entity\Request;
+use App\NoticeCrud;
 use App\RequestCrud;
 use App\UserCrud;
 use DateInterval;
 use DateTime;
 use Psr\Log\LoggerInterface;
+use function Sodium\increment;
 
 class Validator {
     private $logger;
@@ -387,6 +390,20 @@ class Validator {
             }
         }
         return $response;
+    }
+
+    public function validateNotice($body) {
+        $notice = new Notice();
+        $notice->setTitle($this->testInput($body['title']));
+        $notice->setMessage($this->testInput($body['message']));
+
+        $crud = new UserCrud();
+        $name = $crud->readByEmail($this->testInput($body['email']))->getFirstName();
+
+        $notice->setCreator($name);
+
+        $crud = new NoticeCrud();
+        return $crud->create($notice);
     }
 
     public function getDayHours($date, $start, $end, $department) {

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\NoticeCrud;
 use App\RequestCrud;
 use App\UserCrud;
 use DateInterval;
@@ -239,6 +240,31 @@ class POSTS extends AbstractController {
         return new Response(
             json_encode(array(
                 $this->validator->validateEdit($body)
+            ))
+        );
+    }
+
+    public function notice() {
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+
+        return new Response(
+            json_encode(array(
+                'success' => $this->validator->validateNotice($body)
+            ))
+        );
+    }
+
+    public function deleteNotice() {
+        $crud = new NoticeCrud();
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+
+        $id = $this->validator->testInput($body['id']);
+
+        return new Response(
+            json_encode(array(
+                'success' => $crud->delete($id)
             ))
         );
     }

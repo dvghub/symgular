@@ -19,6 +19,7 @@ export class NavBarComponent implements OnInit {
   userClass = this.active === 'user' ? 'active' : '';
   leaveClass = this.active === 'leave' ? 'active' : '';
   reviewClass = this.active === 'review' ? 'active' : '';
+  noticeClass = this.active === 'notice' ? 'active' : '';
 
   constructor(private http: HttpClient, private cookieService: CookieService) {}
 

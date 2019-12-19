@@ -73,3 +73,15 @@ deleterequest:
 editrequest:
   path: /editrequest
   controller: App\Controller\POSTS::editRequest
+
+notice:
+  path: /notice
+  controller: App\Controller\POSTS::notice
+
+notices:
+  path: /notices
+  controller: App\Controller\GETS::notices
+
+deletenotice:
+  path: /deletenotice
+  controller: App\Controller\POSTS::deleteNotice

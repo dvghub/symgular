@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\NoticeCrud;
 use App\RequestCrud;
 use App\UserCrud;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,10 +65,21 @@ class GETS {
 
     public function users() {
         $crud = new UserCrud();
-        $response['employees'] = $crud->readAll();
 
         return new Response(
-            json_encode($response)
+            json_encode(array(
+                'employees' => $crud->readAll()
+            ))
+        );
+    }
+
+    public function notices() {
+        $crud = new NoticeCrud();
+
+        return new Response(
+            json_encode(array(
+                'notices' => $crud->readAll()
+            ))
         );
     }
 

@@ -6,8 +6,19 @@
 
 <div class="col-12 col-md-3 col-md-2 float-right clear-right border-0 border-md-left mt-5 mt-md-0">
     <span class="font-weight-bold float-left clear-left">Birthdays this month: </span>
-        <span *ngFor="let employee of employees">
-            <span class="float-left clear-left font-weight-light pr-2">{{employee.birthday}}.</span>
-            <span class="float-left">{{employee.first_name}} {{employee.last_name}}</span>
+    <span *ngFor="let employee of employees">
+        <span class="float-left clear-left font-weight-light pr-2">{{employee.birthday}}.</span>
+        <span class="float-left">{{employee.first_name}} {{employee.last_name}}</span>
     </span>
+    <div class="float-left clear-left border-top mt-5 pt-2">
+        <div *ngFor="let notice of notices" class="pt-4 px-0">
+            <span class="font-weight-bold float-left clear-left col-12 px-0">{{notice.title}}</span>
+            <p class="float-left clear-left col-12 px-0">{{notice.message}}</p>
+            <span class="font-weight-light text-small float-left clear-left col-12 px-0">Posted by {{notice.creator}} at {{notice.timestamp}}</span>
+            <button *ngIf="user.admin == true || user.department == 'hr'"
+                    class="float-right clear-right w-auto oi oi-x bg-dark border border-secondary text-light p-1"
+                    aria-label="Delete notice"
+                    (click)="deleteNotice(notice.id)"></button>
+        </div>
+    </div>
 </div>
