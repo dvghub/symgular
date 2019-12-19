@@ -11,7 +11,7 @@ export class HomeComponent implements OnInit {
   employees;
   user;
   today = new Date();
-  birthdate;
+  birthday;
 
   constructor(private http: HttpClient, private cookieService: CookieService) {
     http.get('http://localhost:8000/birthdays').subscribe( data => {
@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
     });
     if (cookieService.check('user')) {
         this.user = JSON.parse(cookieService.get('user'));
-        this.birthdate = new Date(this.user.birthday);
+        this.birthday = new Date(this.user.birthday);
     }
   }
 

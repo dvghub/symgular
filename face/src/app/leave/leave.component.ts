@@ -69,6 +69,7 @@ export class LeaveComponent implements OnInit {
   ngOnInit() {}
 
   sendRequest(startDate, startTime, endDate, endTime, type, description) {
+    // TODO Add check for hours ending in :00 or :30
     this.success = false;
     this.startTimeError = '';
     this.endTimeError = '';
@@ -89,12 +90,12 @@ export class LeaveComponent implements OnInit {
         this.startTimeError = (data as any).start_time_error;
         this.endTimeError = (data as any).end_time_error;
         this.descriptionError = (data as any).description_error;
-        this.setMonth(this.month.number);
       } else {
         this.success = (data as any).success;
         if (type !== 'standard') {
           this.hours.left = (data as any).hours;
         }
+        this.setMonth(this.month.number);
       }
     });
   }

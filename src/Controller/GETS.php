@@ -50,7 +50,7 @@ class GETS {
         $email = $body['email'];
 
         $crud = new UserCrud();
-        $user = $crud->read($email);
+        $user = $crud->readByEmail($email);
 
         $response['email'] = $user->getEmail();
         $response['name'] = $user->getFirstName();

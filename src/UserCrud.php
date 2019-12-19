@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class UserCrud extends AbstractController {
     private $conn;
+    private $start_hours = 200;
 
     public function __construct() {
         $this->conn = $this->connect();
@@ -38,7 +39,31 @@ class UserCrud extends AbstractController {
         return $this->conn->lastInsertId();
     }
 
-    public function read($email) {
+    public function read($id) {
+        $stmt = $this->conn->prepare("SELECT * FROM employees WHERE id = :id");
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+
+        $result =  $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            $result = $result[0];
+            $employee = new Employee();
+
+            $employee->setId($result['id']);
+            $employee->setFirstName($result['first_name']);
+            $employee->setLastName($result['last_name']);
+            $employee->setEmail($result['email']);
+            $employee->setPassword($result['password']);
+            $employee->setDepartment($result['department']);
+            $employee->setBirthday($result['birthday']);
+            $employee->setAdmin($result['admin']);
+
+            return $employee;
+        } else return null;
+    }
+
+    public function readByEmail($email) {
         $stmt = $this->conn->prepare("SELECT * FROM employees WHERE email = :email");
         $stmt->bindValue(':email', $email);
         $stmt->execute();
@@ -57,7 +82,6 @@ class UserCrud extends AbstractController {
             $employee->setDepartment($result['department']);
             $employee->setBirthday($result['birthday']);
             $employee->setAdmin($result['admin']);
-            $employee->setHours($result['hours']/10);
 
             return $employee;
         } else return null;

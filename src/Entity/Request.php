@@ -11,7 +11,6 @@ class Request {
     private $description;
     private $approved = 0;
     private $editable = 1;
-    private $standard = 0;
 
     public function getId() {
         return $this->id;
@@ -75,14 +74,6 @@ class Request {
 
     public function setEditable($editable) {
         $this->editable = $editable;
-    }
-
-    public function getStandard() {
-        return $this->standard;
-    }
-
-    public function setStandard($standard) {
-        $this->standard = $standard;
     }
 
 

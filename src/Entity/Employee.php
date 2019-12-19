@@ -11,7 +11,6 @@ class Employee {
     private $department;
     private $birthday;
     private $admin = false;
-    private $hours;
 
     public function getId() {
         return $this->id;
@@ -75,13 +74,5 @@ class Employee {
 
     public function setAdmin($admin) {
         $this->admin = $admin;
-    }
-
-    public function getHours() {
-        return $this->hours;
-    }
-
-    public function setHours($hours) {
-        $this->hours = $hours;
     }
 }

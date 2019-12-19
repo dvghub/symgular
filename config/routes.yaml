@@ -34,10 +34,6 @@ request:
   path: /request
   controller: App\Controller\POSTS::request
 
-hours:
-  path: /hours
-  controller: App\Controller\POSTS::hours
-
 monthrequests:
   path: /monthrequests
   controller: App\Controller\POSTS::requestsByMonth

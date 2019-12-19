@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Entity\Employee;
 use App\Entity\Request;
 use PDO;
 
@@ -25,8 +24,8 @@ class RequestCrud {
     }
 
     public function create(Request $request) {
-        $stmt = $this->conn->prepare("INSERT INTO requests ( employee_id, start, end, type, description, approved, editable, standard) 
-                                          VALUES (:employee_id, :start, :end, :type, :description, :approved, :editable, :standard)");
+        $stmt = $this->conn->prepare("INSERT INTO requests (employee_id, start, end, type, description, approved, editable) 
+                                          VALUES (:employee_id, :start, :end, :type, :description, :approved, :editable)");
         $stmt->bindValue(':employee_id', $request->getEmployeeId());
         $stmt->bindValue(':start', $request->getStartDate());
         $stmt->bindValue(':end', $request->getEndDate());
@@ -34,7 +33,6 @@ class RequestCrud {
         $stmt->bindValue(':description', $request->getDescription());
         $stmt->bindValue(':approved', $request->getApproved());
         $stmt->bindValue(':editable', $request->getEditable());
-        $stmt->bindValue(':standard', $request->getStandard());
         $stmt->execute();
 
         return $this->conn->lastInsertId();
@@ -51,7 +49,7 @@ class RequestCrud {
 
     public function readStandard($date) {
         $stmt = $this->conn->prepare("SELECT id FROM requests
-                                          WHERE type = standard
+                                          WHERE type = 'standard'
                                           AND :date BETWEEN start and end");
         $stmt->bindValue(':date', $date);
         $stmt->execute();
@@ -120,6 +118,8 @@ class RequestCrud {
     }
 
     public function readByMonth($month, $year, $department, $id) {
+        if (strlen($month) < 2) $month = '0'.$month;
+
         $stmt = $this->conn->prepare("SELECT COUNT(id) FROM  employees
                                           WHERE department = :department");
         $stmt->bindValue(':department', $department);
@@ -127,56 +127,60 @@ class RequestCrud {
 
         $department_size = $stmt->fetchColumn();
 
+        $stmt = $this->conn->prepare("SELECT id, employee_id, type, approved, start, end FROM requests
+                                          WHERE employee_id IN (SELECT id FROM employees WHERE department = :department)
+                                          AND (start REGEXP '$year-$month-[0-9]{2}'
+                                              OR end REGEXP '$year-$month-[0-9]{2}'
+                                              OR (start <= '$year-$month-01 00:00:00' AND end >= '$year-$month-31 23:59:59'))");
+        $stmt->bindValue(':department', $department);
+        $stmt->execute();
+        $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $days = array();
 
         for ($i = 1; $i <= cal_days_in_month(CAL_GREGORIAN, $month, $year); $i++) {
             if (strlen($i) < 2) $i = '0'.$i;
             $date = $year.'-'.$month.'-'.$i;
+            $i = ltrim($i, '0');
+            $day_requests = array();
 
-            $stmt = $this->conn->prepare("SELECT id, employee_id, type, approved FROM requests
-                                              WHERE employee_id IN (SELECT id FROM employees WHERE department = :department)
-                                              AND (:date = start OR (:date2 > start AND :date3 < end) OR :date4 = end)");
-            $stmt->bindValue(':department', $department);
-            $stmt->bindValue(':date', $date.' 23:59:59');
-            $stmt->bindValue(':date2', $date.' 23:59:59');
-            $stmt->bindValue(':date3', $date.' 00:00:00');
-            $stmt->bindValue(':date4', $date.' 00:00:00');
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            $standard = false;
-
-            foreach ($result as $request) {
-                if ($request['type'] == 'standard') $standard = true;
+            foreach ($requests as $request) {
+                if ($date.' 23:59:59' >= $request['start'] && $date.' 00:00:00' <= $request['end']) {
+                    array_push($day_requests, $request);
+                }
             }
 
-            $i = ltrim($i, '0');
+            $standard = false;
+            foreach ($day_requests as $request) {
+                if ($request['type'] == 'standard') {
+                    $standard = true;
+                }
+            }
 
             if ($standard) {
                 $days[$i] = 'standard';
             } else {
-                $own_leave = false;
+                $own = false;
                 $approved = false;
 
-                foreach ($result as $request) {
+                foreach ($day_requests as $request) {
                     if ($request['employee_id'] == $id) {
-                        $own_leave = true;
-
+                        $own = true;
                         $approved = $request['approved'] == 1;
                     }
                 }
 
-                if ($own_leave) {
+                if ($own) {
                     if ($date > date('Y-m-d')) {
                         $days[$i] = $approved ? 'approved' : 'hold';
                     } else {
                         $days[$i] = 'past';
                     }
                 } else {
-                    if (count($result) >= floor($department_size / 2)) {
+                    if (count($day_requests) >= floor($department_size / 2)) {
                         $days[$i] = 'full';
                     } else {
-                        if ($department_size > 2 && count($result) >= ($department_size / 2) - 1) {
+                        if ($department_size > 2 && count($day_requests) >= ($department_size / 2) - 1) {
                             $days[$i] = 'near';
                         } else {
                             $days[$i] = 'empty';
@@ -189,9 +193,12 @@ class RequestCrud {
     }
 
     public function readByEmployee($id) {
+        $year = date('Y');
         $stmt = $this->conn->prepare("SELECT * FROM requests
                                           WHERE employee_id = :id
-                                          AND type != 'standard'");
+                                          AND type != 'standard'
+                                          AND (start REGEXP '$year-[0-9]{2}-[0-9]{2}'
+                                               OR end REGEXP '$year-[0-9]{2}-[0-9]{2}')");
         $stmt->bindValue(':id', $id);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

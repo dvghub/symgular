@@ -26,7 +26,7 @@ class Validator {
             $response['email_error'] = 'Unknown email address.';
         } else {
             $crud = new UserCrud();
-            $user = $crud->read($email);
+            $user = $crud->readByEmail($email);
 
             if (!password_verify($password, $user->getPassword())) {
                 $response['password_error'] = 'Incorrect password.';
@@ -98,7 +98,7 @@ class Validator {
 
         $response['success'] = false;
         $crud = new UserCrud();
-        $user = $crud->read($email);
+        $user = $crud->readByEmail($email);
         $values = array();
 
 
@@ -163,7 +163,7 @@ class Validator {
 
         $response['success'] = false;
         $crud = new UserCrud();
-        $user = $crud->read($email);
+        $user = $crud->readByEmail($email);
         $hours = 0;
 
         if(!$this->validateStartDate($start_date)) {
@@ -324,7 +324,7 @@ class Validator {
 
         $response['success'] = false;
         $crud = new UserCrud();
-        $user = $crud->read($email);
+        $user = $crud->readByEmail($email);
 
         if(!$this->validateStartDate($start_date)) {
             $response['start_time_error'] = 'Start date must be in the future.';
@@ -350,6 +350,12 @@ class Validator {
                 if (!$this->containsOverlap($start_date.' '.$start_time, $end_date.' '.$end_time, $user->getId(), $id)) {
                     $start = new DateTime($start_date);
                     $end = new DateTime($end_date);
+                    $result = $this->getDayHours($start, $start_time, '17:00', $user->getDepartment());
+
+                    if (is_string($result)) {
+                        $response['description_error'] = $result;
+                    }
+
                     $date = $start->add(new DateInterval("P1D"));
                     $full_days = date_diff($start, $end)->format('%a');
 
@@ -383,7 +389,7 @@ class Validator {
         return $response;
     }
 
-    private function getDayHours($date, $start, $end, $department) {
+    public function getDayHours($date, $start, $end, $department) {
         $full = $this->isFull($date, $department);
         if (!is_string($full)) {
             if (!$full) {
@@ -423,7 +429,9 @@ class Validator {
     }
 
     private function enterRequest($start_date, $start_time, $end_date, $end_time, $type, $description, Employee $user, $hours) {
-        $user_hours = $user->getHours() - $hours;
+        $crud = new RequestCrud();
+        $posts = new POSTS($this->logger);
+        $user_hours = $posts->hours($user->getId()) - $hours;
         if ($user_hours < 0) {
             $response['description_error'] = 'Not enough hours available.';
         } else {
@@ -435,28 +443,11 @@ class Validator {
             $request->setType($type);
             $request->setDescription($description);
 
-            $crud = new RequestCrud();
-
             $request_id = $crud->create($request);
 
             if ($request_id > 0) {
-                if ($type == 'pto') {
-                    $crud = new UserCrud();
-
-                    $this->logger->info("User hours after sub: ".$user_hours);
-
-                    $values = array('hours' => $user_hours * 10);
-
-                    if ($crud->setup($values, $user->getEmail())) {
-                        $response['success'] = true;
-                        $response['hours'] = $user_hours;
-                    } else {
-                        $response['description_error'] = 'Something went wrong. Please try again.';
-                    }
-                } else {
-                    $response['success'] = true;
-                    $response['hours'] = $user->getHours();
-                }
+                $response['success'] = true;
+                $response['hours'] = $user_hours;
             } else {
                 $response['description_error'] = 'Something went wrong. Please try again.';
             }
