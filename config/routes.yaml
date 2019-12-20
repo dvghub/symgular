@@ -2,86 +2,108 @@ index:
   path: /
   controller: App\Controller\IndexController::index
 
-login:
-  path: /login
-  controller: App\Controller\POSTS::login
 
-user:
+session_user:
+  path: /session/{id}
+  controller: App\Controller\SessionController::user
+  methods: GET
+
+session_user_create:
+  path: /session/users
+  controller: App\Controller\SessionController::create
+  methods: POST
+
+session_user_delete:
+  path: /session
+  controller: App\Controller\SessionController::delete
+  methods: DELETE
+
+user_create:
   path: /user
-  controller: App\Controller\GETS::user
+  controller: App\Controller\UserController::create
+  methods: POST
 
-userbyemail:
-  path: /email
-  controller: App\Controller\GETS::userByEmail
-
-users:
+users_read:
   path: /users
-  controller: App\Controller\GETS::users
+  controller: App\Controller\UserController::readAll
+  methods: GET
 
-logout:
-  path: /logout
-  controller: App\Controller\GETS::logout
+users_birthdays:
+  path: /users/birthday
+  controller: App\Controller\UserController::readBirthdays
+  methods: GET
 
-register:
-  path: /register
-  controller: App\Controller\POSTS::register
+user_read:
+  path: /users/{id}
+  controller: App\Controller\UserController::read
+  methods: GET
 
-update:
-  path: /update
-  controller: App\Controller\POSTS::update
+user_update:
+  path: /users/{id}
+  controller: App\Controller\UserController::update
+  methods: PATCH
 
-request:
+request_create:
   path: /request
-  controller: App\Controller\POSTS::request
+  controller: App\Controller\RequestController::create
+  methods: POST
 
-monthrequests:
-  path: /monthrequests
-  controller: App\Controller\POSTS::requestsByMonth
-
-requests:
+requests_read:
   path: /requests
-  controller: App\Controller\GETS::requests
+  controller: App\Controller\RequestController::readAll
+  methods: GET
 
-idrequest:
-  path: /idrequest
-  controller: App\Controller\POSTS::requestById
+requests_read_month:
+  path: /{year}/{month}/{department}/requests/users/{id}
+  controller: App\Controller\RequestController::readMonth
+  methods: GET
 
-employeerequests:
-  path: /employeerequests
-  controller: App\Controller\POSTS::requestsByEmployee
+requests_read_employee:
+  path: /requests/users/{id}
+  controller: App\Controller\RequestController::readEmployee
+  methods: GET
 
-birthdays:
-  path: /birthdays
-  controller: App\Controller\GETS::birthdaysByMonth
+requests_read_unapproved:
+  path: /requests/unapproved
+  controller: App\Controller\RequestController::readUnapproved
+  methods: GET
 
-unapproved:
-  path: /unapproved
-  controller: App\Controller\GETS::unapproved
+request_read:
+  path: /requests/{id}
+  controller: App\Controller\RequestController::read
+  methods: GET
 
-approve:
-  path: /approve
-  controller: App\Controller\POSTS::approve
+request_update:
+  path: /requests/{id}
+  controller: App\Controller\RequestController::update
+  methods: PATCH
 
-deny:
-  path: /deny
-  controller: App\Controller\POSTS::deny
+request_update_approve:
+  path: /requests/{id}/approve
+  controller: App\Controller\RequestController::approve
+  methods: PATCH
 
-deleterequest:
-  path: /deleterequest
-  controller: App\Controller\POSTS::deleteRequest
+request_delete:
+  path: /requests/{id}
+  controller: App\Controller\RequestController::delete
+  methods: DELETE
 
-editrequest:
-  path: /editrequest
-  controller: App\Controller\POSTS::editRequest
-
-notice:
+notice_create:
   path: /notice
-  controller: App\Controller\POSTS::notice
+  controller: App\Controller\NoticeController::create
+  methods: POST
 
-notices:
+notices_read:
   path: /notices
-  controller: App\Controller\GETS::notices
+  controller: App\Controller\NoticeController::readAll
+  methods: GET
 
-deletenotice:
-  path: /deletenotice
-  controller: App\Controller\POSTS::deleteNotice
+notice_read:
+  path: /notices/{id}
+  controller: App\Controller\NoticeController::read
+  methods: GET
+
+notice_delete:
+  path: notices/{id}
+  controller: App\Controller\NoticeController::delete
+  methods: DELETE

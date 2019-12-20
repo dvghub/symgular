@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
 import {HttpClient} from '@angular/common/http';
+import {Config} from '../config';
 
 @Component({
   selector: 'app-leave',
@@ -8,6 +9,7 @@ import {HttpClient} from '@angular/common/http';
   styleUrls: ['./leave.component.css']
 })
 export class LeaveComponent implements OnInit {
+  config = new Config();
   user;
   today = new Date();
   date;
@@ -53,7 +55,7 @@ export class LeaveComponent implements OnInit {
 
     this.setMonth(this.month.number);
 
-    http.post('http://localhost:8000/employeerequests', {email: this.user.email}).pipe().subscribe( data => {
+    http.get(this.config.url + 'requests/users/' + this.user.id).subscribe( data => {
       console.log(data);
       if ((data as any).success) {
         this.requests = (data as any).requests;
@@ -76,7 +78,7 @@ export class LeaveComponent implements OnInit {
     this.descriptionError = '';
     this.description = '';
 
-    this.http.post('http://localhost:8000/request', {
+    this.http.post(this.config.url + 'request', {
       start_date: startDate,
       start_time: startTime,
       end_date: endDate,
@@ -85,11 +87,10 @@ export class LeaveComponent implements OnInit {
       description,
       email: this.user.email
     }).pipe().subscribe( data => {
-      console.log(JSON.stringify(data));
       if (!(data as any).success) {
-        this.startTimeError = (data as any).start_time_error;
-        this.endTimeError = (data as any).end_time_error;
-        this.descriptionError = (data as any).description_error;
+        this.startTimeError = (data as any).startTimeError;
+        this.endTimeError = (data as any).endTimeError;
+        this.descriptionError = (data as any).descriptionError;
       } else {
         this.success = (data as any).success;
         if (type !== 'standard') {
@@ -153,10 +154,9 @@ export class LeaveComponent implements OnInit {
         break;
     }
 
-    this.http.post(
-        'http://localhost:8000/monthrequests',
-        {month: this.month.number, year: this.year, department: this.user.department, email: this.user.email}
-        ).pipe().subscribe( data => {
+    this.http.get(
+        this.config.url + '/' + this.year + '/' + this.month.number + '/' + this.user.department + '/requests/users/' + this.user.id
+        ).subscribe( data => {
       this.stati = (data as any).days;
     });
 
@@ -188,13 +188,12 @@ export class LeaveComponent implements OnInit {
   }
 
   editRequest(id) {
-    console.log(id);
     this.cookieService.set('id', id);
     window.location.href = 'edit';
   }
 
   deleteRequest(id) {
-    this.http.post('http://localhost:8000/deleterequest', {id}).pipe().subscribe( data => {
+    this.http.delete(this.config.url + 'notices/' + id).subscribe( data => {
       if ((data as any).success) {
         this.requests.forEach( (item, index) => {
           if (this.requests[index].id === id) {

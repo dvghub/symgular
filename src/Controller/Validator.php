@@ -11,7 +11,6 @@ use App\UserCrud;
 use DateInterval;
 use DateTime;
 use Psr\Log\LoggerInterface;
-use function Sodium\increment;
 
 class Validator {
     private $logger;
@@ -36,11 +35,12 @@ class Validator {
             } else {
                 $_SESSION['user'] = $user;
                 $response['success'] = true;
-                $response['first_name'] = $user->getFirstName();
-                $response['last_name'] = $user->getLastName();
-                $response['department'] = $user->getDepartment();
-                $response['birthday'] = $user->getBirthday();
-                $response['admin'] = $user->getAdmin();
+                $response['user']['id'] = $user->getId();
+                $response['user']['first_name'] = $user->getFirstName();
+                $response['user']['last_name'] = $user->getLastName();
+                $response['user']['department'] = $user->getDepartment();
+                $response['user']['birthday'] = $user->getBirthday();
+                $response['user']['admin'] = $user->getAdmin();
                 $response['session_id'] = session_id();
             }
         }

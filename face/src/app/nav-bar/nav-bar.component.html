@@ -5,8 +5,8 @@
     <div id='collapsible' class='collapse navbar-collapse'>
         <div class='navbar-nav mr-auto'>
             <a class="{{itemClass}} text-white big" routerLink="">HOME</a>
-            <a *ngIf="user.firstName == ''" class="{{itemClass}} {{loginClass}}" routerLink="login">LOGIN</a>
-            <a *ngIf="user.firstName != ''" class="{{itemClass}} {{leaveClass}}" routerLink="leave">LEAVE</a>
+            <a *ngIf="user.first_name == ''" class="{{itemClass}} {{loginClass}}" routerLink="login">LOGIN</a>
+            <a *ngIf="user.first_name != ''" class="{{itemClass}} {{leaveClass}}" routerLink="leave">LEAVE</a>
             <a *ngIf="user.admin == true || user.department == 'hr'" class="{{itemClass}} {{newClass}}" routerLink="new">NEW USER</a>
             <a *ngIf="user.admin == true || user.department == 'hr'" class="{{itemClass}} {{reviewClass}}" routerLink="review">REVIEW</a>
             <a *ngIf="user.admin == true || user.department == 'hr'" class="{{itemClass}} {{noticeClass}}" routerLink="notice">NOTICE</a>
@@ -15,7 +15,7 @@
             <a *ngIf="user.firstName != ''" class="{{itemClass}}" (click)="logout()" routerLink="">LOG OUT</a>
             <a *ngIf="user.firstName != ''" class="{{itemClass}} {{userClass}}" routerLink="user">
                 <span class="oi oi-person" aria-hidden="true"></span>
-                {{user.firstName.toUpperCase()}}
+                {{user.first_name.toUpperCase()}}
             </a>
         </div>
     </div>

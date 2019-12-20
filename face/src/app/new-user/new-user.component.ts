@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
+import {Config} from '../config';
 
 @Component({
   selector: 'app-new-user',
@@ -8,6 +9,7 @@ import {CookieService} from 'ngx-cookie-service';
   styleUrls: ['./new-user.component.css']
 })
 export class NewUserComponent implements OnInit {
+  config = new Config();
   success = false;
   firstName = '';
   firstNameError = '';
@@ -16,7 +18,6 @@ export class NewUserComponent implements OnInit {
 
   constructor(private http: HttpClient, private cookieService: CookieService) {
     if (cookieService.check('user')) {
-      console.log(JSON.parse(this.cookieService.get('user')).department);
       if (!JSON.parse(this.cookieService.get('user')).admin && JSON.parse(this.cookieService.get('user')).department !== 'hr') {
         window.location.href = '/';
       }
@@ -28,7 +29,7 @@ export class NewUserComponent implements OnInit {
   ngOnInit() {}
 
   register(firstName, lastName, email, department, birthday, admin) {
-    this.http.post('http://localhost:8000/register', {
+    this.http.post(this.config.url + 'user', {
       first_name: firstName,
       last_name: lastName,
       email,
@@ -44,9 +45,9 @@ export class NewUserComponent implements OnInit {
         (document.getElementById('email') as any).value = '@symgular.com';
         (document.getElementById('birthday') as any).value = '1000-01-01';
       } else {
-        this.firstNameError = (data as any).first_name_error;
-        this.lastNameError = (data as any).last_name_error;
-        this.emailError = (data as any).email_error;
+        this.firstNameError = (data as any).firstNameError;
+        this.lastNameError = (data as any).lastNameError;
+        this.emailError = (data as any).emailError;
       }
     });
   }

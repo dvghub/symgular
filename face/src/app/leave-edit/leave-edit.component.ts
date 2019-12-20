@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
 import {HttpClient} from '@angular/common/http';
+import {Config} from '../config';
 
 @Component({
   selector: 'app-leave-edit',
@@ -8,6 +9,7 @@ import {HttpClient} from '@angular/common/http';
   styleUrls: ['./leave-edit.component.css']
 })
 export class LeaveEditComponent implements OnInit {
+  config = new Config();
   id;
   user;
   request;
@@ -28,9 +30,8 @@ export class LeaveEditComponent implements OnInit {
       window.location.href = '';
     }
 
-    http.post('http://localhost:8000/idrequest', {id: this.id}).pipe().subscribe( data => {
+    http.get(this.config.url + 'requests/' + this.id).subscribe( data => {
       this.request = (data as any);
-      console.log(this.request);
     });
   }
 
@@ -42,21 +43,19 @@ export class LeaveEditComponent implements OnInit {
     this.endTimeError = '';
     this.descriptionError = '';
 
-    this.http.post('http://localhost:8000/editrequest', {
+    this.http.patch(this.config.url + 'requests/' + this.id, {
       start_date: startDate,
       start_time: startTime,
       end_date: endDate,
       end_time: endTime,
       description,
-      email: this.user.email,
-      id: this.request.id
-    }).pipe().subscribe( data => {
-      console.log(JSON.stringify(data));
+      email: this.user.email
+    }).subscribe( data => {
       this.success = (data as any).success;
       if (!this.success) {
-        this.startTimeError = (data as any).start_time_error;
-        this.endTimeError = (data as any).end_time_error;
-        this.descriptionError = (data as any).description_error;
+        this.startTimeError = (data as any).startTimeError;
+        this.endTimeError = (data as any).endTimeError;
+        this.descriptionError = (data as any).descriptionError;
       } else {
         window.location.href = 'leave';
       }

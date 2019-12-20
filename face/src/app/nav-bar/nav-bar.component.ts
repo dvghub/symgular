@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
+import {Config} from '../config';
 
 @Component({
   selector: 'app-nav-bar',
@@ -8,6 +9,7 @@ import {CookieService} from 'ngx-cookie-service';
   styleUrls: ['./nav-bar.component.css']
 })
 export class NavBarComponent implements OnInit {
+  config = new Config();
   @Input()
   active;
   @Input()
@@ -26,7 +28,7 @@ export class NavBarComponent implements OnInit {
   ngOnInit() {}
 
   logout() {
-    this.http.get('http://locahost:8000/logout');
+    this.http.delete(this.config.url + 'session');
     this.cookieService.deleteAll();
     window.location.href = '/';
   }

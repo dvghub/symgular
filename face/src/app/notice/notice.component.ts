@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
+import {Config} from '../config';
 
 @Component({
   selector: 'app-notice',
@@ -8,6 +9,7 @@ import {CookieService} from 'ngx-cookie-service';
   styleUrls: ['./notice.component.css']
 })
 export class NoticeComponent implements OnInit {
+  config = new Config();
   user;
   success = false;
 
@@ -25,7 +27,7 @@ export class NoticeComponent implements OnInit {
   ngOnInit() {}
 
   post(title, message) {
-    this.http.post('http://localhost:8000/notice', {title, message, email: this.user.email}).pipe().subscribe( data => {
+    this.http.post(this.config.url + 'notice', {title, message, email: this.user.email}).pipe().subscribe( data => {
       this.success = (data as any).success;
     });
   }

@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
+import {Config} from '../config';
 
 @Component({
   selector: 'app-login-form',
@@ -9,14 +10,8 @@ import {CookieService} from 'ngx-cookie-service';
 })
 
 export class LoginFormComponent implements OnInit {
-  user = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      department: '',
-      birthday: '',
-      admin: false
-  };
+  config = new Config();
+  user;
 
   emailError;
   passwordError;
@@ -30,20 +25,16 @@ export class LoginFormComponent implements OnInit {
   ngOnInit() {}
 
   login(email, password) {
-      this.http.post('http://localhost:8000/login', {email, password}).pipe().subscribe(data => {
+      this.http.post(this.config.url + 'session/users', {email, password}).pipe().subscribe(data => {
           if ((data as any).success) {
-              this.cookieService.set('session', (data as any).session_id);
-              this.user.firstName = (data as any).first_name;
-              this.user.lastName = (data as any).last_name;
+              this.cookieService.set('session', (data as any).sessionId);
+              this.user = (data as any).user;
               this.user.email = email;
-              this.user.department = (data as any).department;
-              this.user.birthday = (data as any).birthday;
-              this.user.admin = (data as any).admin === 1;
               this.cookieService.set('user', JSON.stringify(this.user));
               window.location.href = '/';
           } else {
-              this.emailError = (data as any).email_error;
-              this.passwordError = (data as any).password_error;
+              this.emailError = (data as any).emailError;
+              this.passwordError = (data as any).passwordError;
           }
       });
   }

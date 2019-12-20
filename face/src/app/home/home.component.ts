@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
-import {not} from 'rxjs/internal-compatibility';
+import {Config} from '../config';
 
 @Component({
   selector: 'app-home',
@@ -14,9 +14,10 @@ export class HomeComponent implements OnInit {
   today = new Date();
   birthday;
   notices;
+  config = new Config();
 
   constructor(private http: HttpClient, private cookieService: CookieService) {
-    http.get('http://localhost:8000/birthdays').subscribe( data => {
+    http.get(this.config.url + 'users/birthday').subscribe( data => {
       this.employees = (data as any).employees;
       let i;
       for (i = 0; i < this.employees.length; i++) {
@@ -33,7 +34,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {}
 
   getNotices() {
-    this.http.get('http://localhost:8000/notices').subscribe( data => {
+    this.http.get(this.config.url + 'notices').subscribe( data => {
       this.notices = (data as any).notices.reverse();
 
       for (const notice of this.notices) {
@@ -46,13 +47,11 @@ export class HomeComponent implements OnInit {
           date.getHours() + ':' +
           (date.getMinutes().toString().length === 1 ? '0' + date.getMinutes() : date.getMinutes());
       }
-
-      console.log(this.notices);
     });
   }
 
   deleteNotice(id) {
-    this.http.post('http://localhost:8000/deletenotice', {id}).pipe().subscribe( data => {
+    this.http.delete(this.config.url + 'notices/' + id).subscribe( data => {
       if ((data as any).success) {
         this.getNotices();
       }
