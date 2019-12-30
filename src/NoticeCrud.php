@@ -54,10 +54,6 @@ class NoticeCrud {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function update(Notice $notice) {
-
-    }
-
     public function delete($id) {
         $stmt = $this->conn->prepare('DELETE FROM notices
                                           WHERE id = :id');

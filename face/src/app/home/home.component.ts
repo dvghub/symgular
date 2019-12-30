@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit {
       for (i = 0; i < this.employees.length; i++) {
         this.employees[i].birthday = new Date(this.employees[i].birthday).getDate();
       }
+      this.employees.sort( (a, b) => (a.birthday > b.birthday) ? 1 : -1);
     });
     if (cookieService.check('user')) {
       this.user = JSON.parse(cookieService.get('user'));

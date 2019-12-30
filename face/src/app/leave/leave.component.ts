@@ -71,34 +71,44 @@ export class LeaveComponent implements OnInit {
   ngOnInit() {}
 
   sendRequest(startDate, startTime, endDate, endTime, type, description) {
-    // TODO Add check for hours ending in :00 or :30
     this.success = false;
     this.startTimeError = '';
     this.endTimeError = '';
     this.descriptionError = '';
     this.description = '';
 
-    this.http.post(this.config.url + 'request', {
-      start_date: startDate,
-      start_time: startTime,
-      end_date: endDate,
-      end_time: endTime,
-      type,
-      description,
-      email: this.user.email
-    }).pipe().subscribe( data => {
-      if (!(data as any).success) {
-        this.startTimeError = (data as any).startTimeError;
-        this.endTimeError = (data as any).endTimeError;
-        this.descriptionError = (data as any).descriptionError;
+    if (startTime.split(':')[1] !== '00' &&
+        startTime.split(':')[1] !== '30') {
+      this.startTimeError = 'Time should be on the hour or half hour.';
+    } else {
+      if (endTime.split(':')[1] !== '00' &&
+          endTime.split(':')[1] !== '30') {
+          this.endTimeError = 'Time should be on the hour or half hour.';
       } else {
-        this.success = (data as any).success;
-        if (type !== 'standard') {
-          this.hours.left = (data as any).hours;
-        }
-        this.setMonth(this.month.number);
+        this.http.post(this.config.url + 'request', {
+          start_date: startDate,
+          start_time: startTime,
+          end_date: endDate,
+          end_time: endTime,
+          type,
+          description,
+          email: this.user.email
+        }).pipe().subscribe( data => {
+          console.log(data);
+          if (!(data as any).success) {
+            this.startTimeError = (data as any).startTimeError;
+            this.endTimeError = (data as any).endTimeError;
+            this.descriptionError = (data as any).descriptionError;
+          } else {
+            this.success = (data as any).success;
+            if (type !== 'standard') {
+              this.hours.left = (data as any).hours;
+            }
+            this.setMonth(this.month.number);
+          }
+        });
       }
-    });
+    }
   }
 
   setMonth(n) {
@@ -155,7 +165,7 @@ export class LeaveComponent implements OnInit {
     }
 
     this.http.get(
-        this.config.url + '/' + this.year + '/' + this.month.number + '/' + this.user.department + '/requests/users/' + this.user.id
+        this.config.url + 'requests/' + this.year + '/' + this.month.number + '/' + this.user.department + '/' + this.user.id
         ).subscribe( data => {
       this.stati = (data as any).days;
     });

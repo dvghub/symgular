@@ -2,7 +2,6 @@ index:
   path: /
   controller: App\Controller\IndexController::index
 
-
 session_user:
   path: /session/{id}
   controller: App\Controller\SessionController::user
@@ -54,7 +53,7 @@ requests_read:
   methods: GET
 
 requests_read_month:
-  path: /{year}/{month}/{department}/requests/users/{id}
+  path: /requests/{year}/{month}/{department}/{id}
   controller: App\Controller\RequestController::readMonth
   methods: GET
 

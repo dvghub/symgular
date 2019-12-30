@@ -23,8 +23,8 @@
     </span>
     <span *ngIf="repeatPasswordError != ''" class="col-6 float-right mb-2 text-danger">{{repeatPasswordError}}</span>
 
-    <label [hidden]="user.admin != true" for="department" class="col-6 float-left clear-left">New department: </label>
-    <select [hidden]="user.admin != true" type="text" id="department" class="col-6 float-right" #department>
+    <label [hidden]="user.admin != 1" for="department" class="col-6 float-left clear-left">New department: </label>
+    <select [hidden]="user.admin != 1" type="text" id="department" class="col-6 float-right" #department>
         <option [selected]="current.department == 'it'" value="it">IT</option>
         <option [selected]="current.department == 'hr'" value="hr">HR</option>
         <option [selected]="current.department == 'rd'" value="rd">R&D</option>

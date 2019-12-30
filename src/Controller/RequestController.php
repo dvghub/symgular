@@ -37,60 +37,34 @@ class RequestController {
         );
     }
 
-    public function readMonth() {
-        $request = Request::createFromGlobals();
-        $body = json_decode($request->getContent(), true);
-        $response['success'] = false;
-
-        if ($this->validator->validateEmail($body['email'])) {
-            $email = $body['email'];
-
-            $crud = new UserCrud();
-
-            $id = $crud->readByEmail($email)->getId();
-
-            $crud = new RequestCrud();
-
-            $response['success'] = true;
-            $response['days'] = $crud->readByMonth($body['month'], $body['year'], $body['department'], $id);
-        }
-
-        return new Response(
-            json_encode($response)
-        );
-    }
-
-    public function readEmployee() {
-        $crud = new UserCrud();
-        $response['success'] = false;
-
-        $request = Request::createFromGlobals();
-        $body = json_decode($request->getContent(), true);
-
-        $email = $this->validator->testInput($body['email']);
-
-        $user = $crud->readByEmail($email);
-
-        if ($this->validator->validateEmail($email)) {
-            $hours = $this->hours($user->getId());
-            if (!is_string($hours)) {
-                $crud = new RequestCrud();
-                $response['success'] = true;
-                $response['requests'] = $crud->readByEmployee($user->getId());
-                $response['hours'] = $hours;
-            }
-        }
-
-        return new Response(
-            json_encode($response)
-        );
-    }
-
-    public function read() {
-        $request = Request::createFromGlobals();
-        $body = json_decode($request->getContent(), true);
+    public function readMonth($year, $month, $department, $id) {
         $crud = new RequestCrud();
-        $request = $crud->read($body['id']);
+        $response['days'] = $crud->readByMonth($month, $year, $department, $id);
+
+        return new Response(
+            json_encode($response)
+        );
+    }
+
+    public function readEmployee($id) {
+        $response['success'] = false;
+
+        $hours = $this->hours($id);
+        if (!is_string($hours)) {
+            $crud = new RequestCrud();
+            $response['success'] = true;
+            $response['requests'] = $crud->readByEmployee($id);
+            $response['hours'] = $hours;
+        }
+
+        return new Response(
+            json_encode($response)
+        );
+    }
+
+    public function read($id) {
+        $crud = new RequestCrud();
+        $request = $crud->read($id);
 
         $splits = explode(' ', $request['start']);
         $request['start_date'] = $splits[0];
@@ -114,52 +88,31 @@ class RequestController {
         );
     }
 
-    public function update() {
+    public function update($id) {
         $request = Request::createFromGlobals();
         $body = json_decode($request->getContent(), true);
 
         return new Response(
+            json_encode($this->validator->validateEdit($body, $id))
+        );
+    }
+
+    public function approve($id) {
+        $crud = new RequestCrud();
+
+        return new Response(
             json_encode(array(
-                $this->validator->validateEdit($body)
+                'success' => $crud->setup(array('approved' => 1), $id)
             ))
         );
     }
 
-    public function approve() {
+    public function delete($id) {
         $crud = new RequestCrud();
-        $request = Request::createFromGlobals();
-        $body = json_decode($request->getContent(), true);
-        $id = $this->validator->testInput($body['id']);
 
         return new Response(
             json_encode(array(
-                'response' => $crud->setup(array('approved' => 1), $id)
-            ))
-        );
-    }
-
-    public function deny() {
-        $crud = new RequestCrud();
-        $request = Request::createFromGlobals();
-        $body = json_decode($request->getContent(), true);
-        $id = $this->validator->testInput($body['id']);
-
-        return new Response(
-            json_encode(array(
-                'response' => $crud->delete($id)
-            ))
-        );
-    }
-
-    public function delete() {
-        $crud = new RequestCrud();
-        $request = Request::createFromGlobals();
-        $body = json_decode($request->getContent(), true);
-        $id = $this->validator->testInput($body['id']);
-
-        return new Response(
-            json_encode(array(
-                'response' => $crud->delete($id)
+                'success' => $crud->delete($id)
             ))
         );
     }
@@ -185,21 +138,21 @@ class RequestController {
             if ($end->format('Y-m-d') > date('Y').'-12-31') $end = new DateTime(date('Y').'-12-31 17:00:00');
 
             if ($start->format('Y-m-d') == $end->format('Y-m-d')) {
-                $result = $this->validator->getDayHours($start->format('Y-m-d'), $start->format('H:i'), $end->format('H:i'), $user->getDepartment());
+                $result = $this->validator->getDayHours($start->format('Y-m-d'), $start->format('H:i'), $end->format('H:i'), $user['department']);
                 if (is_string($result)) {
                     $response['error'] = 'Something went wrong. Please refresh the page.';
                 } else $hours += $result;
             } elseif ($end->format('Y-m-d') == $start->add(new DateInterval('P1D'))->format('Y-m-d')) {
-                $result = $this->validator->getDayHours($start->format('Y-m-d'), $start->format('H:i'), '17:00', $user->getDepartment());
+                $result = $this->validator->getDayHours($start->format('Y-m-d'), $start->format('H:i'), '17:00', $user['department']);
                 if (is_string($result)) {
                     $response['error'] = 'Something went wrong. Please refresh the page.';
                 } else $hours += $result;
-                $result = $this->validator->getDayHours($end->format('Y-m-d'), '09:00', $end->format('H:i'), $user->getDepartment());
+                $result = $this->validator->getDayHours($end->format('Y-m-d'), '09:00', $end->format('H:i'), $user['department']);
                 if (is_string($result)) {
                     $response['error'] = 'Something went wrong. Please refresh the page.';
                 } else $hours += $result;
             } else {
-                $result = $this->validator->getDayHours($start->format('Y-m-d'), $start->format('H:i'), '17:00', $user->getDepartment());
+                $result = $this->validator->getDayHours($start->format('Y-m-d'), $start->format('H:i'), '17:00', $user['department']);
                 if (is_string($result)) {
                     $response['error'] = 'Something went wrong. Please refresh the page.';
                 } else $hours += $result;
@@ -208,7 +161,7 @@ class RequestController {
                 $result = ($full_days - 2) * 8;
                 $hours += $result;
 
-                $result = $this->validator->getDayHours($end->format('Y-m-d'), '09:00', $end->format('H:i'), $user->getDepartment());
+                $result = $this->validator->getDayHours($end->format('Y-m-d'), '09:00', $end->format('H:i'), $user['department']);
                 if (is_string($result)) {
                     $response['error'] = 'Something went wrong. Please refresh the page.';
                 } else $hours += $result;

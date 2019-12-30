@@ -27,8 +27,11 @@ export class NoticeComponent implements OnInit {
   ngOnInit() {}
 
   post(title, message) {
+    this.success = false;
     this.http.post(this.config.url + 'notice', {title, message, email: this.user.email}).pipe().subscribe( data => {
-      this.success = (data as any).success;
+        if ((data as any).success) {
+            this.success = true;
+        }
     });
   }
 }

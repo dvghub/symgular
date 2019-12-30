@@ -44,6 +44,16 @@ class UserController extends AbstractController {
         );
     }
 
+    public function read($id) {
+        $crud = new UserCrud();
+
+        return new Response(
+            json_encode(array(
+                'employee' => $crud->read($id)
+            ))
+        );
+    }
+
     public function email() {
         $request = Request::createFromGlobals();
         $body = json_decode($request->getContent(), true);
@@ -60,6 +70,17 @@ class UserController extends AbstractController {
 
         return new Response(
             json_encode($response)
+        );
+    }
+
+    public function update($id) {
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+
+        return new Response(
+            json_encode(array(
+                $this->validator->validateUpdate($body, $id)
+            ))
         );
     }
 }

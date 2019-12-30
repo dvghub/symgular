@@ -3,8 +3,8 @@
     <span class="col-12 float-left clear-left text-right px-0">{{hours.left}} hours left of {{hours.total}}</span>
     <span class="float-left clear-left col-12 p-0">
         <label for="start_date" class="col-6 float-left clear-left">Start date: </label>
-        <input type="date" id="start_date" value="{{date}}" class="col-4 float-left px-0 px-md-3" (change)="end_date.value = start_date.value" #start_date>
-        <input type="time" title="Start time" value="09:00" class="col-2 float-right px-0 px-md-3" (change)="end_time.value = start_time.value" step="1800" min="08:00" max="18:00" #start_time>
+        <input type="date" id="start_date" value="{{date}}" class="col-4 float-left px-0 px-md-3" onchange="end_date.value = start_date.value" #start_date>
+        <input type="time" title="Start time" value="09:00" class="col-2 float-right px-0 px-md-3" step="1800" min="08:00" max="18:00" #start_time>
     </span>
     <span *ngIf="startTimeError != ''" class="col-6 text-danger float-right clear-right px-0 text-right">{{startTimeError}}</span>
 

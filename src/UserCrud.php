@@ -8,7 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class UserCrud extends AbstractController {
     private $conn;
-    private $start_hours = 200;
 
     public function __construct() {
         $this->conn = $this->connect();
@@ -47,19 +46,7 @@ class UserCrud extends AbstractController {
         $result =  $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if ($result) {
-            $result = $result[0];
-            $employee = new Employee();
-
-            $employee->setId($result['id']);
-            $employee->setFirstName($result['first_name']);
-            $employee->setLastName($result['last_name']);
-            $employee->setEmail($result['email']);
-            $employee->setPassword($result['password']);
-            $employee->setDepartment($result['department']);
-            $employee->setBirthday($result['birthday']);
-            $employee->setAdmin($result['admin']);
-
-            return $employee;
+            return $result[0];
         } else return null;
     }
 
@@ -120,7 +107,7 @@ class UserCrud extends AbstractController {
         return $stmt->execute();
     }
 
-    public function setup($values, $email) {
+    public function setup($values, $id) {
         $statement = 'UPDATE employees SET ';
         $set = array();
 
@@ -130,8 +117,8 @@ class UserCrud extends AbstractController {
         }
 
         $statement = rtrim($statement, ', ');
-        $statement .= ' WHERE email = :email';
-        $set[':email'] = $email;
+        $statement .= ' WHERE id = :id';
+        $set[':id'] = $id;
 
         return $this->update($statement, $set);
     }

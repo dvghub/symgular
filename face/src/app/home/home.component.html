@@ -1,7 +1,7 @@
 <div class="col-12 col-md-8 float-left clear-left text-big" *ngIf="user">
     <span *ngIf="today.getMonth() == birthday.getMonth() && today.getDate() == birthday.getDate(); else ngelse">Happy birthday, </span>
     <ng-template #ngelse>Welcome, </ng-template>
-    {{user.firstName}}
+    {{user.first_name}}
 </div>
 
 <div class="col-12 col-md-3 col-md-2 float-right clear-right border-0 border-md-left mt-5 mt-md-0">
@@ -10,7 +10,7 @@
         <span class="float-left clear-left font-weight-light pr-2">{{employee.birthday}}.</span>
         <span class="float-left">{{employee.first_name}} {{employee.last_name}}</span>
     </span>
-    <div class="float-left clear-left border-top mt-5 pt-2">
+    <div class="float-left clear-left border-top mt-5 pt-2" *ngIf="user != undefined">
         <div *ngFor="let notice of notices" class="pt-4 px-0">
             <span class="font-weight-bold float-left clear-left col-12 px-0">{{notice.title}}</span>
             <p class="float-left clear-left col-12 px-0">{{notice.message}}</p>

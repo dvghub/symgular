@@ -47,7 +47,7 @@ class RequestCrud {
         return $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
     }
 
-    public function readStandard($date) {
+    public function readStandard(String $date) {
         $stmt = $this->conn->prepare("SELECT id FROM requests
                                           WHERE type = 'standard'
                                           AND :date BETWEEN start and end");
@@ -57,7 +57,7 @@ class RequestCrud {
         return $stmt->fetchAll();
     }
 
-    public function readFull($date, $department) {
+    public function readFull(String $date, $department) {
         $stmt = $this->conn->prepare("SELECT COUNT(id) FROM requests
                                           WHERE employee_id IN (SELECT id FROM employees
                                           WHERE department = :department)
@@ -127,11 +127,14 @@ class RequestCrud {
 
         $department_size = $stmt->fetchColumn();
 
+        $last_day = new \DateTime($year.'-'.$month.'-01');
+        $last_day = $last_day->format('t');
+
         $stmt = $this->conn->prepare("SELECT id, employee_id, type, approved, start, end FROM requests
                                           WHERE employee_id IN (SELECT id FROM employees WHERE department = :department)
                                           AND (start REGEXP '$year-$month-[0-9]{2}'
                                               OR end REGEXP '$year-$month-[0-9]{2}'
-                                              OR (start <= '$year-$month-01 00:00:00' AND end >= '$year-$month-31 23:59:59'))");
+                                              OR (start <= '$year-$month-01 00:00:00' AND end >= '$year-$month-$last_day 23:59:59'))");
         $stmt->bindValue(':department', $department);
         $stmt->execute();
         $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -197,8 +200,9 @@ class RequestCrud {
         $stmt = $this->conn->prepare("SELECT * FROM requests
                                           WHERE employee_id = :id
                                           AND type != 'standard'
-                                          AND (start REGEXP '$year-[0-9]{2}-[0-9]{2}'
-                                               OR end REGEXP '$year-[0-9]{2}-[0-9]{2}')");
+                                          AND ((start REGEXP '$year-[0-9]{2}-[0-9]{2}'
+                                               OR end REGEXP '$year-[0-9]{2}-[0-9]{2}')
+                                               OR (start > '$year-12-31'))");
         $stmt->bindValue(':id', $id);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

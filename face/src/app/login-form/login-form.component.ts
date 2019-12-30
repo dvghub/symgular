@@ -26,6 +26,7 @@ export class LoginFormComponent implements OnInit {
 
   login(email, password) {
       this.http.post(this.config.url + 'session/users', {email, password}).pipe().subscribe(data => {
+          console.log(data);
           if ((data as any).success) {
               this.cookieService.set('session', (data as any).sessionId);
               this.user = (data as any).user;

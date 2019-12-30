@@ -25,15 +25,19 @@ export class LeaveReviewComponent implements OnInit {
       window.location.href = '/';
     }
 
-    http.get(this.config.url + 'requests/unapproved').subscribe( data => {
-      this.requests = (data as any).requests;
-      if (this.requests.length !== 0) {
-        this.load(this.requests[0].id);
-      }
-    });
+    this.getRequests();
   }
 
   ngOnInit() {}
+
+  getRequests() {
+      this.http.get(this.config.url + 'requests/unapproved').subscribe( data => {
+          this.requests = (data as any).requests;
+          if (this.requests.length !== 0) {
+              this.load(this.requests[0].id);
+          }
+      });
+  }
 
   load(id) {
     this.selected = id;
@@ -45,29 +49,17 @@ export class LeaveReviewComponent implements OnInit {
   }
 
   approve(id) {
-    console.log(id);
     this.http.patch(this.config.url + 'requests/' + id + '/approve', {}).subscribe( data => {
       if ((data as any).success) {
-        this.requests.forEach( (item, index) => {
-          if (this.requests[index].id === id) {
-            this.requests.splice(index, 1);
-          }
-        });
-        this.ngOnInit();
+        this.getRequests();
       }
     });
   }
 
   deny(id) {
-    console.log(id);
     this.http.delete(this.config.url + 'requests/' + id).subscribe( data => {
       if ((data as any).success) {
-        this.requests.forEach( (item, index) => {
-          if (this.requests[index].id === id) {
-            this.requests.splice(index, 1);
-          }
-        });
-        this.ngOnInit();
+        this.getRequests();
       }
     });
   }

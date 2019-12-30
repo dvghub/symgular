@@ -13,13 +13,7 @@ export class UserInfoComponent implements OnInit {
   config = new Config();
   employees = {};
   user;
-  current = {
-    id: 0,
-    email: '',
-    name : '',
-    department: '',
-    admin: false
-  };
+  current;
   selected;
   uploadMessage = '';
   oldPasswordError = '';
@@ -40,11 +34,7 @@ export class UserInfoComponent implements OnInit {
 
   load(id) {
     this.http.get(this.config.url + 'users/' + id).pipe().subscribe( data => {
-      this.current.id = (data as any).id;
-      this.current.email = (data as any).email;
-      this.current.name = (data as any).name;
-      this.current.department = (data as any).department;
-      this.current.admin = (data as any).admin === 1;
+      this.current = (data as any).employee;
       this.selected = this.current.id;
     });
   }
@@ -58,15 +48,16 @@ export class UserInfoComponent implements OnInit {
     this.passwordError = '';
     this.repeatPasswordError = '';
 
-    this.http.patch(this.config.url + 'requests/' + this.current.id, {
+    this.http.patch(this.config.url + 'users/' + this.current.id, {
       editor_admin: this.user.admin,
       password_old: passwordOld,
       password,
       password_repeat: passwordRepeat,
       department,
       admin
-    }).pipe().subscribe( data => {
+    }).subscribe( data => {
       if ((data as any).success) {
+        this.load(this.current.id);
         this.uploadMessage = 'Update succeeded!';
       } else {
         this.oldPasswordError = (data as any).oldPasswordError;

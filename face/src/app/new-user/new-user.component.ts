@@ -17,11 +17,9 @@ export class NewUserComponent implements OnInit {
   emailError = '';
 
   constructor(private http: HttpClient, private cookieService: CookieService) {
-    if (cookieService.check('user')) {
-      if (!JSON.parse(this.cookieService.get('user')).admin && JSON.parse(this.cookieService.get('user')).department !== 'hr') {
-        window.location.href = '/';
-      }
-    } else {
+    if (!cookieService.check('user') &&
+        !JSON.parse(this.cookieService.get('user')).admin &&
+        JSON.parse(this.cookieService.get('user')).department !== 'hr') {
       window.location.href = '/';
     }
   }
@@ -39,7 +37,7 @@ export class NewUserComponent implements OnInit {
     }).pipe().subscribe( data => {
       if ((data as any).success) {
         this.success = true;
-        this.firstName = (data as any).first_name;
+        this.firstName = firstName;
         (document.getElementById('first_name') as any).value = '';
         (document.getElementById('last_name') as any).value = '';
         (document.getElementById('email') as any).value = '@symgular.com';

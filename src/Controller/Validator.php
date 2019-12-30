@@ -25,53 +25,53 @@ class Validator {
         $response['success'] = false;
 
         if (!$this->validateEmail($email)) {
-            $response['email_error'] = 'Unknown email address.';
+            $response['emailError'] = 'Unknown email address.';
         } else {
             $crud = new UserCrud();
             $user = $crud->readByEmail($email);
 
             if (!password_verify($password, $user->getPassword())) {
-                $response['password_error'] = 'Incorrect password.';
+                $response['passwordError'] = 'Incorrect password.';
             } else {
                 $_SESSION['user'] = $user;
                 $response['success'] = true;
                 $response['user']['id'] = $user->getId();
-                $response['user']['first_name'] = $user->getFirstName();
-                $response['user']['last_name'] = $user->getLastName();
+                $response['user']['firstName'] = $user->getFirstName();
+                $response['user']['lastName'] = $user->getLastName();
                 $response['user']['department'] = $user->getDepartment();
                 $response['user']['birthday'] = $user->getBirthday();
                 $response['user']['admin'] = $user->getAdmin();
-                $response['session_id'] = session_id();
+                $response['sessionId'] = session_id();
             }
         }
         return $response;
     }
 
     public function validateRegister($body) {
-        $first_name = $this->testInput($body['first_name']);
-        $last_name = $this->testInput($body['last_name']);
+        $firstName = $this->testInput($body['first_name']);
+        $lastName = $this->testInput($body['last_name']);
         $email = $this->testInput($body['email']);
         $department = $this->testInput($body['department']);
         $birthday = $this->testInput($body['birthday']);
         $admin = $this->testInput($body['admin']);
         $response['success'] = false;
 
-        if (empty($first_name)) {
-            $response['first_name_error'] = 'Please enter a first name.';
+        if (empty($firstName)) {
+            $response['firstNameError'] = 'Please enter a first name.';
         }
-        if (empty($last_name)) {
-            $response['last_name_error'] = 'Please enter a last name.';
+        if (empty($lastName)) {
+            $response['lastNameError'] = 'Please enter a last name.';
         }
         if (empty($email)) {
-            $response['email_error'] = 'Please enter an email address.';
+            $response['emailError'] = 'Please enter an email address.';
         } else {
             if (!$this->validateEmail($email)) {
-                $response['email_error'] = 'Please enter a valid email address.';
+                $response['emailError'] = 'Please enter a valid email address.';
             } else {
                 $crud = new UserCrud();
                 $employee = new Employee();
-                $employee->setFirstName($first_name);
-                $employee->setLastName($last_name);
+                $employee->setFirstName($firstName);
+                $employee->setLastName($lastName);
                 $employee->setEmail($email);
                 $employee->setPassword(password_hash('password', PASSWORD_BCRYPT, [10]));
                 $employee->setDepartment($department);
@@ -81,18 +81,16 @@ class Validator {
 
                 if ($crud->create($employee)) {
                     $response['success'] = true;
-                    $response['first_name'] = $first_name;
                 } else {
-                    $response['first_name_error'] = 'Something went wrong. Please try again.';
+                    $response['firstNameError'] = 'Something went wrong. Please try again.';
                 }
             }
         }
         return $response;
     }
 
-    public function validateUpdate($body) {
-        $editor_admin = $this->testInput($body['editor_admin']);
-        $email = $this->testInput($body['email']);
+    public function validateUpdate($body, $id) {
+        $editorAdmin = $this->testInput($body['editor_admin']);
         $password_old = $this->testInput($body['password_old']);
         $password = $this->testInput($body['password']);
         $password_repeat = $this->testInput($body['password_repeat']);
@@ -101,29 +99,29 @@ class Validator {
 
         $response['success'] = false;
         $crud = new UserCrud();
-        $user = $crud->readByEmail($email);
+        $user = $crud->read($id);
         $values = array();
 
 
-        if (!$editor_admin) {
+        if (!$editorAdmin) {
             if (empty($password_old)) {
-                $response['old_password_error'] = 'Please enter your password.';
-            } elseif (!password_verify($password_old, $user->getPassword())) {
-                $response['old_password_error'] = 'Password incorrect.';
+                $response['oldPasswordError'] = 'Please enter your password.';
+            } elseif (!password_verify($password_old, $user['password'])) {
+                $response['oldPasswordError'] = 'Password incorrect.';
             }
             if (empty($password)) {
-                $response['password_error'] = 'Please enter a new password.';
+                $response['passwordError'] = 'Please enter a new password.';
             } else {
                 if (empty($password_repeat)) {
-                    $response['repeat_password_error'] = 'Please repeat your new password.';
+                    $response['repeatPasswordError'] = 'Please repeat your new password.';
                 } else {
                     if ($password != $password_repeat) {
-                        $response['repeat_password_error'] = 'Passwords don\'t match.';
+                        $response['repeatPasswordError'] = 'Passwords don\'t match.';
                     } else {
                         $values['password'] = password_hash($password, PASSWORD_BCRYPT, [10]);
 
-                        if (!$crud->setup($values, $email)) {
-                            $response['password_error'] = 'Something went wrong. Please try again.';
+                        if (!$crud->setup($values, $id)) {
+                            $response['passwordError'] = 'Something went wrong. Please try again.';
                         } else {
                             $response['success'] = true;
                         }
@@ -133,21 +131,21 @@ class Validator {
         } else {
             if (!empty($password)) {
                 if (empty($password_repeat)) {
-                    $response['repeat_password_error'] = 'Please repeat the new password.';
+                    $response['repeatPasswordError'] = 'Please repeat the new password.';
                 } else {
                     if ($password != $password_repeat) {
-                        $response['repeat_password_error'] = 'Passwords don\'t match.';
+                        $response['repeatPasswordError'] = 'Passwords don\'t match.';
                     } else {
                         $values['password'] = password_hash($password, PASSWORD_BCRYPT, [10]);
                     }
                 }
             }
-            if ($department != $user->getDepartment()) $values['department'] = $department;
-            if ($admin != $user->getAdmin()) $values['admin'] = $admin ? 1 : 0;
+            if ($department != $user['password']) $values['department'] = $department;
+            if ($admin != $user['admin']) $values['admin'] = $admin ? 1 : 0;
         }
-        if (empty($response['old_password_error']) && empty($response['password_error']) && empty($response['repeat_password_error'])) {
-            if (!$crud->setup($values, $email)) {
-                $response['password_error'] = 'Something went wrong. Please try again.';
+        if (empty($response['oldPasswordError']) && empty($response['passwordError']) && empty($response['repeatPasswordError'])) {
+            if (!$crud->setup($values, $id)) {
+                $response['passwordError'] = 'Something went wrong. Please try again.';
             } else {
                 $response['success'] = true;
             }
@@ -170,25 +168,25 @@ class Validator {
         $hours = 0;
 
         if(!$this->validateStartDate($start_date)) {
-            $response['start_time_error'] = 'Start date must be in the future.';
+            $response['startTimeError'] = 'Start date must be in the future.';
         } elseif (!$this->validateEndDate($start_date, $end_date)) {
-            $response['end_time_error'] = 'End date must be the same or after start date.';
+            $response['endTimeError'] = 'End date must be the same or after start date.';
         } else {
             if (empty($description)) {
-                $response['description_error'] = 'Description is required.';
+                $response['descriptionError'] = 'Description is required.';
             }
             if (new DateTime($start_time) < new DateTime('08:00') || new DateTime($start_time) > new DateTime('17:00')) {
-                $response['start_time_error'] = 'Start time must be between 08:00 and 17:00.';
+                $response['startTimeError'] = 'Start time must be between 08:00 and 17:00.';
             }
             if (new DateTime($end_time) > new DateTime('18:00') || new DateTime($end_time) < new DateTime('09:00')) {
-                $response['end_time_error'] = 'End time must be between 09:00 and 18:00.';
+                $response['endTimeError'] = 'End time must be between 09:00 and 18:00.';
             }
             if ($start_date == $end_date && new DateTime($start_time) > new DateTime($end_time)) {
-                $response['end_time_error'] = 'End time must be after start time.';
+                $response['endTimeError'] = 'End time must be after start time.';
             }
-            if (!key_exists('start_time_error', $response) &&
-                !key_exists('end_time_error', $response) &&
-                !key_exists('description_error', $response)) {
+            if (!key_exists('startTimeError', $response) &&
+                !key_exists('endTimeError', $response) &&
+                !key_exists('descriptionError', $response)) {
 
                 if (!$this->containsOverlap($start_date.' '.$start_time, $end_date.' '.$end_time, $user->getId()) || $type == 'standard') {
                     switch ($type) {
@@ -200,7 +198,7 @@ class Validator {
                                     $hours += $result;
                                     $response = $this->enterRequest($start_date, $start_time, $end_date, $end_time, $type, $description, $user, $hours);
                                 } else {
-                                    $response['description_error'] = $result;
+                                    $response['descriptionError'] = $result;
                                 }
                             } elseif (new DateTime($end_date) == date_add(new DateTime($start_date), new DateInterval('P1D'))) {
                                 $result = $this->getDayHours($start_date, $start_time, '17:00', $user->getDepartment());
@@ -212,7 +210,7 @@ class Validator {
                                         $response = $this->enterRequest($start_date, $start_time, $end_date, $end_time, $type, $description, $user, $hours);
                                     }
                                 } else {
-                                    $response['description_error'] = $result;
+                                    $response['descriptionError'] = $result;
                                 }
                             } else {
                                 $result = $this->getDayHours($start_date, $start_time, '17:00', $user->getDepartment());
@@ -232,11 +230,11 @@ class Validator {
                                         if (!is_string($result)) {
                                             $hours += $result;
                                         } else {
-                                            $response['description_error'] = $result;
+                                            $response['descriptionError'] = $result;
                                         }
                                     }
 
-                                    if (!key_exists('description_error', $response)) {
+                                    if (!key_exists('descriptionError', $response)) {
                                         $result = $this->getDayHours($end_date, '09:00', $end_time, $user->getDepartment());
 
                                         if (!is_string($result)) {
@@ -245,11 +243,11 @@ class Validator {
                                             $this->logger->info("End result: ".$hours);
                                             $response = $this->enterRequest($start_date, $start_time, $end_date, $end_time, $type, $description, $user, $hours);
                                         } else {
-                                            $response['description_error'] = $result;
+                                            $response['descriptionError'] = $result;
                                         }
                                     }
                                 } else {
-                                    $response['description_error'] = $result;
+                                    $response['descriptionError'] = $result;
                                 }
                             }
                             break;
@@ -262,13 +260,13 @@ class Validator {
                                     $hours += $result;
                                     $response = $this->enterRequest($start_date, $start_time, $end_date, $end_time, $type, $description, $user, $hours);
                                 } else {
-                                    $response['description_error'] = $result;
+                                    $response['descriptionError'] = $result;
                                 }
                             }
                             break;
                         case 'standard':
                             if ($start_date != $end_date) {
-                                $response['end_time_error'] = 'This type of leave can not be longer than one day.';
+                                $response['end_timeError'] = 'This type of leave can not be longer than one day.';
                             } else {
                                 if ($this->isWeekendDay(new DateTime($start_date))) {
                                     $result = 0;
@@ -285,7 +283,6 @@ class Validator {
                                     $request->setDescription($description);
                                     $request->setApproved(1);
                                     $request->setEditable(0);
-                                    $request->setStandard(1);
 
                                     foreach ($crud->readAll() as $employee) {
                                         $request->setEmployeeId($employee['id']);
@@ -299,64 +296,63 @@ class Validator {
                                             if ($crud->setup($values, $employee['email'])) {
                                                 $response['success'] = true;
                                             } else {
-                                                $response['description_error'] = 'Something went wrong. Please try again.';
+                                                $response['descriptionError'] = 'Something went wrong. Please try again.';
                                             }
                                         }
                                     }
                                 } else {
-                                    $response['description_error'] = $result;
+                                    $response['descriptionError'] = $result;
                                 }
                             }
                     }
                 } else {
-                    $response['description_error'] = 'Request overlaps with existing request.';
+                    $response['descriptionError'] = 'Request overlaps with existing request.';
                 }
             }
         }
         return $response;
     }
 
-    public function validateEdit($body) {
+    public function validateEdit($body, $id) {
         $start_date = $this->testInput($body['start_date']);
         $start_time = $this->testInput($body['start_time']);
         $end_date = $this->testInput($body['end_date']);
         $end_time = $this->testInput($body['end_time']);
         $description = $this->testInput($body['description']);
         $email = $this->testInput($body['email']);
-        $id = $this->testInput($body['id']);
 
         $response['success'] = false;
         $crud = new UserCrud();
         $user = $crud->readByEmail($email);
 
         if(!$this->validateStartDate($start_date)) {
-            $response['start_time_error'] = 'Start date must be in the future.';
+            $response['startTimeError'] = 'Start date must be in the future.';
         } elseif (!$this->validateEndDate($start_date, $end_date)) {
-            $response['end_time_error'] = 'End date must be the same or after start date.';
+            $response['endTimeError'] = 'End date must be the same or after start date.';
         } else {
             if (empty($description)) {
-                $response['description_error'] = 'Description is required.';
+                $response['descriptionError'] = 'Description is required.';
             }
             if (new DateTime($start_time) < new DateTime('08:00') || new DateTime($start_time) > new DateTime('17:00')) {
-                $response['start_time_error'] = 'Start time must be between 08:00 and 17:00.';
+                $response['startTimeError'] = 'Start time must be between 08:00 and 17:00.';
             }
             if (new DateTime($end_time) > new DateTime('18:00') || new DateTime($end_time) < new DateTime('09:00')) {
-                $response['end_time_error'] = 'End time must be between 09:00 and 18:00.';
+                $response['endTimeError'] = 'End time must be between 09:00 and 18:00.';
             }
             if ($start_date == $end_date && new DateTime($start_time) > new DateTime($end_time)) {
-                $response['end_time_error'] = 'End time must be after start time.';
+                $response['endTimeError'] = 'End time must be after start time.';
             }
-            if (!key_exists('start_time_error', $response) &&
-                !key_exists('end_time_error', $response) &&
-                !key_exists('description_error', $response)) {
+            if (!key_exists('startTimeError', $response) &&
+                !key_exists('endTimeError', $response) &&
+                !key_exists('descriptionError', $response)) {
 
                 if (!$this->containsOverlap($start_date.' '.$start_time, $end_date.' '.$end_time, $user->getId(), $id)) {
                     $start = new DateTime($start_date);
                     $end = new DateTime($end_date);
-                    $result = $this->getDayHours($start, $start_time, '17:00', $user->getDepartment());
+                    $result = $this->getDayHours($start->format('Y-m-d'), $start_time, '17:00', $user->getDepartment());
 
                     if (is_string($result)) {
-                        $response['description_error'] = $result;
+                        $response['descriptionError'] = $result;
                     }
 
                     $date = $start->add(new DateInterval("P1D"));
@@ -367,11 +363,11 @@ class Validator {
                         $result = $this->getDayHours($date->format('Y-m-d'), '09:00', '17:00', $user->getDepartment());
 
                         if (is_string($result)) {
-                            $response['description_error'] = $result;
+                            $response['descriptionError'] = $result;
                         }
                     }
-                    if (!key_exists('description_error', $response)) {
-                        $result = $this->getDayHours($end_date, '09:00', $end_time, $user->getDepartment());
+                    if (!key_exists('descriptionError', $response)) {
+                        $result = $this->getDayHours($end->format('Y-m-d'), '09:00', $end_time, $user->getDepartment());
 
                         if (!is_string($result)) {
                             $values['start'] = $start_date.' '.$start_time.':00';
@@ -381,11 +377,11 @@ class Validator {
                             $crud = new RequestCrud();
                             $response['success'] = $crud->setup($values, $id);
                         } else {
-                            $response['description_error'] = $result;
+                            $response['descriptionError'] = $result;
                         }
                     }
                 } else {
-                    $response['description_error'] = 'Request overlaps with existing request.';
+                    $response['descriptionError'] = 'Request overlaps with existing request.';
                 }
             }
         }
@@ -406,7 +402,7 @@ class Validator {
         return $crud->create($notice);
     }
 
-    public function getDayHours($date, $start, $end, $department) {
+    public function getDayHours(String $date, $start, $end, $department) {
         $full = $this->isFull($date, $department);
         if (!is_string($full)) {
             if (!$full) {
@@ -428,13 +424,13 @@ class Validator {
         return $date->format('N') >= 6;
     }
 
-    private function isStandardDay($date) {
+    private function isStandardDay(String $date) {
         $crud = new RequestCrud();
         $result = $crud->readStandard($date);
         return count($result) > 0;
     }
 
-    private function isFull($date, $department) {
+    private function isFull(String $date, $department) {
         $crud = new RequestCrud();
         return $crud->readFull($date, $department);
     }
@@ -447,10 +443,10 @@ class Validator {
 
     private function enterRequest($start_date, $start_time, $end_date, $end_time, $type, $description, Employee $user, $hours) {
         $crud = new RequestCrud();
-        $posts = new POSTS($this->logger);
+        $posts = new RequestController($this->logger);
         $user_hours = $posts->hours($user->getId()) - $hours;
         if ($user_hours < 0) {
-            $response['description_error'] = 'Not enough hours available.';
+            $response['descriptionError'] = 'Not enough hours available.';
         } else {
             $request = new Request();
 
@@ -466,7 +462,7 @@ class Validator {
                 $response['success'] = true;
                 $response['hours'] = $user_hours;
             } else {
-                $response['description_error'] = 'Something went wrong. Please try again.';
+                $response['descriptionError'] = 'Something went wrong. Please try again.';
             }
         }
         return $response;

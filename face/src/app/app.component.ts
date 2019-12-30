@@ -12,6 +12,7 @@ export class AppComponent implements OnInit {
     href;
     active;
     user = {
+        id: null,
         firstName: '',
         lastName: '',
         email: '',
