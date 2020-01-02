@@ -25,18 +25,18 @@ export class LoginFormComponent implements OnInit {
   ngOnInit() {}
 
   login(email, password) {
-      this.http.post(this.config.url + 'session/users', {email, password}).pipe().subscribe(data => {
-          console.log(data);
-          if ((data as any).success) {
-              this.cookieService.set('session', (data as any).sessionId);
-              this.user = (data as any).user;
-              this.user.email = email;
-              this.cookieService.set('user', JSON.stringify(this.user));
-              window.location.href = '/';
-          } else {
-              this.emailError = (data as any).emailError;
-              this.passwordError = (data as any).passwordError;
-          }
-      });
+    this.http.post(this.config.url + 'session/users', {email, password}).pipe().subscribe(data => {
+      console.log(data);
+      if ((data as any).success) {
+        this.cookieService.set('session', (data as any).sessionId);
+        this.user = (data as any).user;
+        this.user.email = email;
+        this.cookieService.set('user', JSON.stringify(this.user));
+        window.location.href = '/';
+      } else {
+        this.emailError = (data as any).emailError;
+        this.passwordError = (data as any).passwordError;
+      }
+    });
   }
 }

@@ -33,15 +33,15 @@ import { NoticeComponent } from './notice/notice.component';
   imports: [
     BrowserModule,
     RouterModule.forRoot([
-        {path: '', component: HomeComponent},
-        {path: 'home', component: HomeComponent},
-        {path: 'login', component: LoginFormComponent},
-        {path: 'new', component: NewUserComponent},
-        {path: 'user', component: UserInfoComponent},
-        {path: 'leave', component: LeaveComponent},
-        {path: 'edit', component: LeaveEditComponent},
-        {path: 'review', component: LeaveReviewComponent},
-        {path: 'notice', component: NoticeComponent}
+      {path: '', component: HomeComponent},
+      {path: 'home', component: HomeComponent},
+      {path: 'login', component: LoginFormComponent},
+      {path: 'new', component: NewUserComponent},
+      {path: 'user', component: UserInfoComponent},
+      {path: 'leave', component: LeaveComponent},
+      {path: 'edit', component: LeaveEditComponent},
+      {path: 'review', component: LeaveReviewComponent},
+      {path: 'notice', component: NoticeComponent}
     ]),
     HttpClientModule
   ],

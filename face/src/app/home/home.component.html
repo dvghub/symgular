@@ -1,7 +1,7 @@
 <div class="col-12 col-md-8 float-left clear-left text-big" *ngIf="user">
     <span *ngIf="today.getMonth() == birthday.getMonth() && today.getDate() == birthday.getDate(); else ngelse">Happy birthday, </span>
     <ng-template #ngelse>Welcome, </ng-template>
-    {{user.first_name}}
+    {{user.firstName}}
 </div>
 
 <div class="col-12 col-md-3 col-md-2 float-right clear-right border-0 border-md-left mt-5 mt-md-0">

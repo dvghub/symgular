@@ -42,8 +42,8 @@ export class HomeComponent implements OnInit {
         notice.message = notice.message.replace(/\\/g, '');
         const date = new Date(notice.timestamp);
         notice.timestamp =
-          date.getDay() + '-' +
-          date.getMonth() + '-' +
+          date.getDate() + '-' +
+          (date.getMonth() + 1) + '-' +
           date.getFullYear() + ' ' +
           date.getHours() + ':' +
           (date.getMinutes().toString().length === 1 ? '0' + date.getMinutes() : date.getMinutes());

@@ -43,22 +43,32 @@ export class LeaveEditComponent implements OnInit {
     this.endTimeError = '';
     this.descriptionError = '';
 
-    this.http.patch(this.config.url + 'requests/' + this.id, {
-      start_date: startDate,
-      start_time: startTime,
-      end_date: endDate,
-      end_time: endTime,
-      description,
-      email: this.user.email
-    }).subscribe( data => {
-      this.success = (data as any).success;
-      if (!this.success) {
-        this.startTimeError = (data as any).startTimeError;
-        this.endTimeError = (data as any).endTimeError;
-        this.descriptionError = (data as any).descriptionError;
+    if (startTime.split(':')[1] !== '00' &&
+      startTime.split(':')[1] !== '30') {
+      this.startTimeError = 'Time should be on the hour or half hour.';
+    } else {
+      if (endTime.split(':')[1] !== '00' &&
+        endTime.split(':')[1] !== '30') {
+        this.endTimeError = 'Time should be on the hour or half hour.';
       } else {
-        window.location.href = 'leave';
+        this.http.patch(this.config.url + 'requests/' + this.id, {
+          start_date: startDate,
+          start_time: startTime,
+          end_date: endDate,
+          end_time: endTime,
+          description,
+          email: this.user.email
+        }).subscribe( data => {
+          this.success = (data as any).success;
+          if (!this.success) {
+            this.startTimeError = (data as any).startTimeError;
+            this.endTimeError = (data as any).endTimeError;
+            this.descriptionError = (data as any).descriptionError;
+          } else {
+            window.location.href = 'leave';
+          }
+        });
       }
-    });
+    }
   }
 }

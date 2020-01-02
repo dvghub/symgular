@@ -21,7 +21,6 @@ class RequestController {
     public function create() {
         $request = Request::createFromGlobals();
         $body = json_decode($request->getContent(), true);
-
         return new Response(
             json_encode($this->validator->validateRequest($body))
         );
@@ -29,7 +28,6 @@ class RequestController {
 
     public function readAll() {
         $crud = new RequestCrud();
-
         return new Response(
             json_encode(array(
                 'requests' => $crud->readAll()
@@ -40,7 +38,6 @@ class RequestController {
     public function readMonth($year, $month, $department, $id) {
         $crud = new RequestCrud();
         $response['days'] = $crud->readByMonth($month, $year, $department, $id);
-
         return new Response(
             json_encode($response)
         );
@@ -48,8 +45,8 @@ class RequestController {
 
     public function readEmployee($id) {
         $response['success'] = false;
-
         $hours = $this->hours($id);
+
         if (!is_string($hours)) {
             $crud = new RequestCrud();
             $response['success'] = true;
@@ -65,7 +62,6 @@ class RequestController {
     public function read($id) {
         $crud = new RequestCrud();
         $request = $crud->read($id);
-
         $splits = explode(' ', $request['start']);
         $request['start_date'] = $splits[0];
         $request['start_time'] = substr($splits[1], 0, 5);
@@ -80,7 +76,6 @@ class RequestController {
 
     public function readUnapproved() {
         $crud = new RequestCrud();
-
         return new Response(
             json_encode(array(
                 'requests' => $crud->readUnapproved()
@@ -91,7 +86,6 @@ class RequestController {
     public function update($id) {
         $request = Request::createFromGlobals();
         $body = json_decode($request->getContent(), true);
-
         return new Response(
             json_encode($this->validator->validateEdit($body, $id))
         );
@@ -99,7 +93,6 @@ class RequestController {
 
     public function approve($id) {
         $crud = new RequestCrud();
-
         return new Response(
             json_encode(array(
                 'success' => $crud->setup(array('approved' => 1), $id)
@@ -109,7 +102,6 @@ class RequestController {
 
     public function delete($id) {
         $crud = new RequestCrud();
-
         return new Response(
             json_encode(array(
                 'success' => $crud->delete($id)
@@ -124,16 +116,13 @@ class RequestController {
         $user = $crud->read($id);
         $crud = new RequestCrud();
         $requests = $crud->readByEmployee($id);
-
         $requests = array_filter($requests, function ($v) {
             return $v['type'] == 'pto';
         });
 
         foreach ($requests as $request) {
-
             $start = new DateTime(date($request['start']));
             $end = new DateTime(date($request['end']));
-
             if ($start->format('Y-m-d') < date('Y').'-01-01') $start = new DateTime(date('Y').'-01-01 09:00:00');
             if ($end->format('Y-m-d') > date('Y').'-12-31') $end = new DateTime(date('Y').'-12-31 17:00:00');
 

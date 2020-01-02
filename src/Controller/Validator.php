@@ -78,9 +78,23 @@ class Validator {
                 $employee->setBirthday($birthday);
                 $admin = $admin ? 1 : 0;
                 $employee->setAdmin($admin);
+                $id = $crud->create($employee);
 
-                if ($crud->create($employee)) {
+                if ($id > 0) {
                     $response['success'] = true;
+                    $crud = new RequestCrud();
+                    $standards = $crud->readStandards(1);
+                    foreach ($standards as $standard) {
+                        $request = new Request();
+                        $request->setEmployeeId($id);
+                        $request->setStartDate($standard['start']);
+                        $request->setEndDate($standard['end']);
+                        $request->setType($standard['type']);
+                        $request->setDescription($standard['description']);
+                        $request->setApproved(1);
+                        $request->setEditable(0);
+                        $crud->create($request);
+                    }
                 } else {
                     $response['firstNameError'] = 'Something went wrong. Please try again.';
                 }

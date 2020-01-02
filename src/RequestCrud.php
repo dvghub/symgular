@@ -53,7 +53,15 @@ class RequestCrud {
                                           AND :date BETWEEN start and end");
         $stmt->bindValue(':date', $date);
         $stmt->execute();
+        return $stmt->fetchAll();
+    }
 
+    public function readStandards($id) {
+        $stmt = $this->conn->prepare("SELECT * FROM requests
+                                          WHERE type = 'standard'
+                                          AND employee_id = :id");
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
         return $stmt->fetchAll();
     }
 
@@ -138,7 +146,6 @@ class RequestCrud {
         $stmt->bindValue(':department', $department);
         $stmt->execute();
         $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         $days = array();
 
         for ($i = 1; $i <= cal_days_in_month(CAL_GREGORIAN, $month, $year); $i++) {

@@ -15,7 +15,7 @@
             <a *ngIf="user.firstName != ''" class="{{itemClass}}" (click)="logout()" routerLink="">LOG OUT</a>
             <a *ngIf="user.firstName != ''" class="{{itemClass}} {{userClass}}" routerLink="user">
                 <span class="oi oi-person" aria-hidden="true"></span>
-                {{user.first_name.toUpperCase()}}
+                {{user.firstName.toUpperCase()}}
             </a>
         </div>
     </div>

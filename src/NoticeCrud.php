@@ -43,14 +43,12 @@ class NoticeCrud {
         $notice->setMessage($result['message']);
         $notice->setCreator($result['creator']);
         $notice->setTimestamp($result['timestamp']);
-
         return $notice;
     }
 
     public function readAll() {
         $stmt = $this->conn->prepare("SELECT * FROM notices");
         $stmt->execute();
-
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -58,7 +56,6 @@ class NoticeCrud {
         $stmt = $this->conn->prepare('DELETE FROM notices
                                           WHERE id = :id');
         $stmt->bindValue(':id', $id);
-
         return $stmt->execute();
     }
 }

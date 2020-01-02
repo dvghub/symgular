@@ -24,19 +24,20 @@ export class LeaveReviewComponent implements OnInit {
     } else {
       window.location.href = '/';
     }
-
     this.getRequests();
   }
 
   ngOnInit() {}
 
   getRequests() {
-      this.http.get(this.config.url + 'requests/unapproved').subscribe( data => {
-          this.requests = (data as any).requests;
-          if (this.requests.length !== 0) {
-              this.load(this.requests[0].id);
-          }
-      });
+    this.http.get(this.config.url + 'requests/unapproved').subscribe( data => {
+      this.requests = (data as any).requests;
+      if (this.requests.length !== 0) {
+          this.load(this.requests[0].id);
+      } else {
+        this.current = undefined;
+      }
+    });
   }
 
   load(id) {

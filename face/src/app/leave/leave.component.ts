@@ -10,8 +10,8 @@ import {Config} from '../config';
 })
 export class LeaveComponent implements OnInit {
   config = new Config();
-  user;
   today = new Date();
+  user;
   date;
   predays;
   days;
@@ -48,7 +48,7 @@ export class LeaveComponent implements OnInit {
     if (d.length < 2) {
       d = '0' + d;
     }
-    this.date = this.today.getFullYear() + '-' + m + '-' + (d);
+    this.date = this.today.getFullYear() + '-' + m + '-' + d;
 
     this.month.number = this.today.getMonth() + 1;
     this.year = this.today.getFullYear();
@@ -56,7 +56,6 @@ export class LeaveComponent implements OnInit {
     this.setMonth(this.month.number);
 
     http.get(this.config.url + 'requests/users/' + this.user.id).subscribe( data => {
-      console.log(data);
       if ((data as any).success) {
         this.requests = (data as any).requests;
         this.hours.left = (data as any).hours;
@@ -75,7 +74,6 @@ export class LeaveComponent implements OnInit {
     this.startTimeError = '';
     this.endTimeError = '';
     this.descriptionError = '';
-    this.description = '';
 
     if (startTime.split(':')[1] !== '00' &&
         startTime.split(':')[1] !== '30') {
@@ -94,7 +92,6 @@ export class LeaveComponent implements OnInit {
           description,
           email: this.user.email
         }).pipe().subscribe( data => {
-          console.log(data);
           if (!(data as any).success) {
             this.startTimeError = (data as any).startTimeError;
             this.endTimeError = (data as any).endTimeError;
@@ -105,6 +102,7 @@ export class LeaveComponent implements OnInit {
               this.hours.left = (data as any).hours;
             }
             this.setMonth(this.month.number);
+            this.description = '';
           }
         });
       }
