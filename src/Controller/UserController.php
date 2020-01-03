@@ -88,9 +88,7 @@ class UserController extends AbstractController {
         $body = json_decode($request->getContent(), true);
 
         return new Response(
-            json_encode(array(
-                $this->validator->validateUpdate($body, $id)
-            ))
+            json_encode($this->validator->validateUpdate($body, $id))
         );
     }
 

@@ -56,6 +56,7 @@ export class UserInfoComponent implements OnInit {
       department,
       admin
     }).subscribe( data => {
+      console.log(data);
       if ((data as any).success) {
         this.load(this.current.id);
         this.uploadMessage = 'Update succeeded!';
