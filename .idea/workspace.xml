@@ -2,25 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5d1ea8bc-eabc-4b94-9b8c-6b5dfc1302a6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Controller/Mailer.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/bootstrap.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/css.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/welcome.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/symgular.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/symgular.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/routes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/face/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/footer-bar/footer-bar.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/home/home.component.css" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/face/src/app/home/home.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/face/src/app/home/home.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/src/app/leave/leave.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/face/src/app/leave/leave.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face/src/app/new-user/new-user.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/face/src/app/new-user/new-user.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Validator.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Validator.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RequestCrud.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/RequestCrud.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/UserCrud.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/UserCrud.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/leave-edit/leave-edit.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/leave-review/leave-review.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/leave/leave.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/login-form/login-form.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/nav-bar/nav-bar.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/new-user/new-user.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/not-found/not-found.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/not-found/not-found.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/face/src/app/not-found/not-found.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/notice/notice.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/user-info/user-info.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/face/src/app/welcome/welcome.component.css" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -341,7 +337,7 @@
       <path value="$PROJECT_DIR$/vendor/twig/cssinliner-extra" />
     </include_path>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="507" />
     <option name="y" value="-11" />
     <option name="width" value="976" />
@@ -445,7 +441,7 @@
       <workItem from="1574851211955" duration="41108000" />
       <workItem from="1575371306223" duration="47577000" />
       <workItem from="1575879198130" duration="137639000" />
-      <workItem from="1577696704090" duration="31516000" />
+      <workItem from="1577696704090" duration="32096000" />
     </task>
     <task id="LOCAL-00001" summary="Leave request functionality added.">
       <created>1575991002882</created>
@@ -472,10 +468,11 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="318513000" />
+    <option name="totallyTimeSpent" value="319093000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12899786" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
