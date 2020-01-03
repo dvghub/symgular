@@ -73,7 +73,6 @@ class Validator {
                 $employee->setFirstName($firstName);
                 $employee->setLastName($lastName);
                 $employee->setEmail($email);
-                $employee->setPassword(password_hash('password', PASSWORD_BCRYPT, [10]));
                 $employee->setDepartment($department);
                 $employee->setBirthday($birthday);
                 $admin = $admin ? 1 : 0;
@@ -82,6 +81,7 @@ class Validator {
 
                 if ($id > 0) {
                     $response['success'] = true;
+                    $response['id'] = $id;
                     $crud = new RequestCrud();
                     $standards = $crud->readStandards(1);
                     foreach ($standards as $standard) {

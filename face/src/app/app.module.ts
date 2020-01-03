@@ -15,6 +15,8 @@ import { LeaveComponent } from './leave/leave.component';
 import { LeaveReviewComponent } from './leave-review/leave-review.component';
 import { LeaveEditComponent } from './leave-edit/leave-edit.component';
 import { NoticeComponent } from './notice/notice.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { NoticeComponent } from './notice/notice.component';
     LeaveComponent,
     LeaveReviewComponent,
     LeaveEditComponent,
-    NoticeComponent
+    NoticeComponent,
+    WelcomeComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +45,9 @@ import { NoticeComponent } from './notice/notice.component';
       {path: 'leave', component: LeaveComponent},
       {path: 'edit', component: LeaveEditComponent},
       {path: 'review', component: LeaveReviewComponent},
-      {path: 'notice', component: NoticeComponent}
+      {path: 'notice', component: NoticeComponent},
+      {path: 'welcome/:email', component: WelcomeComponent},
+      {path: '**', component: NotFoundComponent}
     ]),
     HttpClientModule
   ],

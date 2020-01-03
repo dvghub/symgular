@@ -10,9 +10,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends AbstractController {
     private $validator;
+    private $logger;
 
     public function __construct(LoggerInterface $logger) {
         $this->validator = new Validator($logger);
+        $this->logger = $logger;
     }
 
     public function create() {
@@ -54,15 +56,23 @@ class UserController extends AbstractController {
         );
     }
 
+    public function readPassword($id) {
+        $crud = new UserCrud();
+        $isset = $crud->readPassword($id) != null;
+
+        return new Response(
+            json_encode(array(
+                'isset' => $isset
+            ))
+        );
+    }
+
     public function email() {
         $request = Request::createFromGlobals();
         $body = json_decode($request->getContent(), true);
-
         $email = $body['email'];
-
         $crud = new UserCrud();
         $user = $crud->readByEmail($email);
-
         $response['email'] = $user->getEmail();
         $response['name'] = $user->getFirstName();
         $response['department'] = $user->getDepartment();
@@ -80,6 +90,18 @@ class UserController extends AbstractController {
         return new Response(
             json_encode(array(
                 $this->validator->validateUpdate($body, $id)
+            ))
+        );
+    }
+
+    public function updatePassword($id) {
+        $request = Request::createFromGlobals();
+        $body = json_decode($request->getContent(), true);
+        $crud = new UserCrud();
+
+        return new Response(
+            json_encode(array(
+                'success' => $crud->setup(array('password' => password_hash($body['password'], PASSWORD_BCRYPT, [10])), $id)
             ))
         );
     }

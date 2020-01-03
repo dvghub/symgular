@@ -34,7 +34,7 @@ export class NewUserComponent implements OnInit {
       department,
       birthday,
       admin
-    }).pipe().subscribe( data => {
+    }).subscribe( data => {
       if ((data as any).success) {
         this.success = true;
         this.firstName = firstName;
@@ -42,6 +42,8 @@ export class NewUserComponent implements OnInit {
         (document.getElementById('last_name') as any).value = '';
         (document.getElementById('email') as any).value = '@symgular.com';
         (document.getElementById('birthday') as any).value = '1000-01-01';
+
+        this.http.post(this.config.url + 'mailer/welcome/' + (data as any).id, {}).subscribe();
       } else {
         this.firstNameError = (data as any).firstNameError;
         this.lastNameError = (data as any).lastNameError;

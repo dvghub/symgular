@@ -85,8 +85,8 @@ class UserCrud extends AbstractController {
         $employees = array();
 
         $stmt = $this->conn->prepare("SELECT first_name, last_name, birthday FROM employees
-                                                       WHERE birthday REGEXP '[0-9]{4}-" . $month . "-[0-9]{2}'
-                                                       AND birthday NOT REGEXP '1000-01-01'");
+                                          WHERE birthday REGEXP '[0-9]{4}-" . $month . "-[0-9]{2}'
+                                          AND birthday NOT REGEXP '1000-01-01'");
         $stmt->execute();
         $results =  $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -95,6 +95,16 @@ class UserCrud extends AbstractController {
         }
 
         return $employees;
+    }
+
+    public function readPassword($id) {
+        $stmt = $this->conn->prepare("SELECT password FROM employees
+                                          WHERE id = :id");
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+
+        return $results[0][0];
     }
 
     public function update($statement, $values) {

@@ -1,0 +1,15 @@
+<!-- template for welcome email -->
+{% apply inline_css(source('bootstrap.css')) %}
+    <div class="col-12">
+        <div class="col-12 height-50 bg-dark text-right text-light" style="font-size: 2rem">SYMGULAR</div>
+        <div class="col-12 height-5 bg-secondary mb-3"></div>
+        <div class="col-12 text-center">
+            <h1>Welcome {{ name }}!</h1>
+            <p class="mx-auto">Please click here to activate your company account.</p>
+            <a class="mx-auto bg-dark border border-secondary text-light btn-link p-2" href="http://localhost:4200/welcome/{{ id }}">ACTIVATE</a>
+        </div>
+        <div class='col-12 mx-auto px-0 position-fixed bg-secondary height-5 mt-5'></div>
+        <footer class='col-12 mx-auto fixed-bottom px-1 py-1 bg-dark text-white text-right font-weight-lighter'>This email was sent to {{ mail }}.</footer>
+    </div>
+
+{% endapply %}

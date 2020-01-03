@@ -37,9 +37,19 @@ user_read:
   controller: App\Controller\UserController::read
   methods: GET
 
+user_read_password:
+  path: /users/{id}/password
+  controller: App\Controller\UserController::readPassword
+  methods: GET
+
 user_update:
   path: /users/{id}
   controller: App\Controller\UserController::update
+  methods: PATCH
+
+user_update_password:
+  path: /users/{id}/password
+  controller: App\Controller\UserController::updatePassword
   methods: PATCH
 
 request_create:
@@ -106,3 +116,13 @@ notice_delete:
   path: notices/{id}
   controller: App\Controller\NoticeController::delete
   methods: DELETE
+
+mailer_welcome:
+  path: mailer/welcome/{id}
+  controller: App\Controller\Mailer::welcome
+  methods: POST
+
+mailer_test:
+  path: mailer/test
+  controller: App\Controller\Mailer::test
+  methods: POST

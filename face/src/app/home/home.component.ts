@@ -30,6 +30,8 @@ export class HomeComponent implements OnInit {
       this.birthday = new Date(this.user.birthday);
     }
     this.getNotices();
+
+    // this.http.post(this.config.url + 'mailer/welcome/' + this.user.id, {}).subscribe();
   }
 
   ngOnInit() {}

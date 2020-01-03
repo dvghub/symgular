@@ -10,6 +10,12 @@ class RequestCrud {
 
     public function __construct() {
         $this->conn = $this->connect();
+
+        $stmt = $this->conn->prepare("UPDATE requests
+                                          SET editable = 0
+                                          WHERE end < CURRENT_TIMESTAMP
+                                          OR (CURRENT_TIMESTAMP BETWEEN start AND end)");
+        $stmt->execute();
     }
 
     public function connect() {

@@ -75,8 +75,8 @@
             <span class="col-3 px-0 float-left clear-left">{{request.start.split(" ")[0]}}</span>
             <span class="col-3 px-0 float-left">{{request.end.split(" ")[0]}}</span>
             <span class="col-6 px-0 float-left">{{request.description.replace("\\", "")}}
-                <span (click)="deleteRequest(request.id)" [ngClass]="{'oi oi-x float-right p-1': request.start.split(' ')[0] >= today.getFullYear() + '-' + ((today.getMonth() + 1).toString().length == 1 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1) + '-' + (today.getDate().toString().length == 1 ? '0' + today.getDate() : today.getDate())}"></span>
-                <span (click)="editRequest(request.id)" [ngClass]="{'oi oi-pencil float-right p-1': request.start.split(' ')[0] >= today.getFullYear() + '-' + ((today.getMonth() + 1).toString().length == 1 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1) + '-' + (today.getDate().toString().length == 1 ? '0' + today.getDate() : today.getDate())}"></span>
+                <span (click)="deleteRequest(request.id)" [ngClass]="{'oi oi-x float-right p-1': request.editable == 1}"></span>
+                <span (click)="editRequest(request.id)" [ngClass]="{'oi oi-pencil float-right p-1': request.editable == 1}"></span>
             </span>
         </span>
     </div>

@@ -1,0 +1,18 @@
+<div class="col-12 col-md-8 col-lg-6">
+    <span class="px-3 font-weight-bold mb-3 float-left clear-left">Please choose your password for the platform: </span>
+
+    <span class="float-left clear-left col-12 p-0">
+        <label for="password" class="col-6 float-left clear-left">Password: </label>
+        <input id="password" class="col-6 float-left" type="password" #password>
+    </span>
+    <span *ngIf="passwordError != ''" class="text-danger float-right float-md-left clear-left clear-md-none px-md-1">{{passwordError}}</span>
+
+    <span class="float-left clear-left col-12 p-0">
+        <label for="password_repeat" class="col-6 float-left clear-left">Repeat password: </label>
+        <input id="password_repeat" class="col-6 float-left" type="password" #password_repeat>
+    </span>
+    <span *ngIf="passwordRepeatError != ''" class="text-danger float-right clear-right px-md-1">{{passwordRepeatError}}</span>
+
+    <button class="col-6 float-right clear-right mt-2 bg-dark border border-secondary text-light" (click)="submit(password.value, password_repeat.value)"> -- </button>
+    <span *ngIf="success" class="text-danger float-right clear-right px-md-1">Password set!</span>
+</div>
