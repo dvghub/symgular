@@ -64,7 +64,7 @@ class Validator {
         }
         if (empty($email)) {
             $response['emailError'] = 'Please enter an email address.';
-        } else {
+        } else if (empty($response['firstNameError']) && empty($response['lastNameError'])){
             if (!$this->validateEmail($email)) {
                 $response['emailError'] = 'Please enter a valid email address.';
             } else {
@@ -133,12 +133,6 @@ class Validator {
                         $response['repeatPasswordError'] = 'Passwords don\'t match.';
                     } else {
                         $values['password'] = password_hash($password, PASSWORD_BCRYPT, [10]);
-
-                        if (!$crud->setup($values, $id)) {
-                            $response['passwordError'] = 'Something went wrong. Please try again.';
-                        } else {
-                            $response['success'] = true;
-                        }
                     }
                 }
             }

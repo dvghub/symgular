@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
 import {Config} from '../config';
+import {sendRequest} from 'selenium-webdriver/http';
 
 @Component({
   selector: 'app-new-user',
@@ -11,6 +12,7 @@ import {Config} from '../config';
 export class NewUserComponent implements OnInit {
   config = new Config();
   success = false;
+  sent = false;
   firstName = '';
   firstNameError = '';
   lastNameError = '';
@@ -27,6 +29,12 @@ export class NewUserComponent implements OnInit {
   ngOnInit() {}
 
   register(firstName, lastName, email, department, birthday, admin) {
+    this.success = false;
+    this.sent = false;
+    this.firstNameError = '';
+    this.lastNameError = '';
+    this.emailError = '';
+
     this.http.post(this.config.url + 'user', {
       first_name: firstName,
       last_name: lastName,
@@ -43,7 +51,11 @@ export class NewUserComponent implements OnInit {
         (document.getElementById('email') as any).value = '@symgular.com';
         (document.getElementById('birthday') as any).value = '1000-01-01';
 
-        this.http.post(this.config.url + 'mailer/welcome/' + (data as any).id, {}).subscribe();
+        this.http.post(this.config.url + 'mailer/welcome/' + (data as any).id, {}).subscribe( (d) => {
+          if ((d as any).success) {
+            this.sent = true;
+          }
+        });
       } else {
         this.firstNameError = (data as any).firstNameError;
         this.lastNameError = (data as any).lastNameError;

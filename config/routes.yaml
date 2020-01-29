@@ -121,8 +121,3 @@ mailer_welcome:
   path: mailer/welcome/{id}
   controller: App\Controller\Mailer::welcome
   methods: POST
-
-mailer_test:
-  path: mailer/test
-  controller: App\Controller\Mailer::test
-  methods: POST

@@ -3,18 +3,21 @@
 namespace App\Controller;
 
 use App\UserCrud;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\Email;
 
 class Mailer extends AbstractController {
     private $mailer;
+    private $logger;
 
-    public function __construct(MailerInterface $mailer) {
+    public function __construct(MailerInterface $mailer, LoggerInterface $logger) {
         $this->mailer = $mailer;
+        $this->logger = $logger;
     }
 
     public function welcome($id) {
@@ -30,17 +33,16 @@ class Mailer extends AbstractController {
                 'mail' => $employee['email'],
                 'id' => $employee['id']
             ]);
-        $this->mailer->send($email);
-        return new Response();
-    }
-
-    public function test() {
-        $email = (new Email())
-            ->from(new Address('dieuwer@ethlan.fr'))
-            ->to(new Address('dieuwer.greevenbroek@gmail.com'))
-            ->subject('Mailer test')
-            ->text('Ayy');
-        $this->mailer->send($email);
-        return new Response();
+        try {
+            $this->mailer->send($email);
+            return new Response(json_encode(array(
+                'success' => true
+            )));
+        } catch (TransportExceptionInterface $e) {
+            $this->logger->info('Mailer failed with following message: '.$e);
+            return new Response(json_encode(array(
+                'success' => false
+            )));
+        }
     }
 }
